@@ -1,8 +1,9 @@
 const CACHE_NAME = 'detox-dashboard-v1';
 const urlsToCache = [
-  '/index.html',
-  '/manifest.json',
-  '/logo-detox.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './logo-detox.png'
 ];
 
 // Install event - cache resources

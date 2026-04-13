@@ -3,123 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Dein persönlicher Detox-Plan Tracker mit Rezepten und Einkaufsliste">
-<meta name="theme-color" content="#10b981">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Detox">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="logo-detox.png">
 <title>🌿 Detox Dashboard</title>
 <style>
   :root {
-    --bg: #fafaf9;
-    --bg2: #f5f5f4;
-    --bg3: #e7e5e4;
-    --card: #ffffff;
-    --card2: #fefefe;
-    --border: #e5e5e5;
-    --accent: #10b981;
-    --accent2: #34d399;
-    --accent3: #6ee7b7;
-    --accent-glow: rgba(16,185,129,0.15);
-    --text: #0f172a;
-    --text2: #475569;
-    --text3: #94a3b8;
-    --danger: #ef4444;
-    --warn: #f59e0b;
-    --info: #3b82f6;
-    --radius: 20px;
-    --radius-sm: 12px;
-    --shadow: 0 10px 40px rgba(0,0,0,0.08);
-    --shadow-sm: 0 4px 20px rgba(0,0,0,0.05);
-    --shadow-hover: 0 20px 60px rgba(16,185,129,0.2);
-    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bg: #f6f3ee;
+    --bg2: #edeae3;
+    --bg3: #e4e0d8;
+    --card: #fdfcfa;
+    --card2: #f6f3ee;
+    --border: #d9d2c7;
+    --accent: #6b9e78;
+    --accent2: #89b595;
+    --accent3: #a8cab0;
+    --accent-glow: rgba(107,158,120,0.14);
+    --text: #2c2825;
+    --text2: #4e453d;
+    --text3: #756860;
+    --danger: #c0604e;
+    --warn: #c4893a;
+    --success: #6b9e78;
+    --info: #4a90a4;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 28px rgba(44,40,37,0.10);
+    --shadow-sm: 0 2px 10px rgba(44,40,37,0.07);
+    --shadow-hover: 0 6px 20px rgba(107,158,120,0.25);
+    --transition: 0.2s ease;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: linear-gradient(135deg, #fafaf9 0%, #f0fdfa 50%, #ecfdf5 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Georgia', sans-serif;
+    background: linear-gradient(135deg, #f6f3ee 0%, #edeae3 50%, #f0ede6 100%);
     background-attachment: fixed;
     color: var(--text);
     min-height: 100vh;
     transition: background var(--transition), color var(--transition);
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
   }
   /* ─── Header ─── */
   header {
-    background: rgba(255, 255, 255, 0.85);
-    border-bottom: 1px solid rgba(16,185,129,0.1);
-    padding: 0 32px;
+    background: linear-gradient(135deg, rgba(107,158,120,0.08), rgba(255,255,255,0.95));
+    border-bottom: 2px solid var(--accent);
+    padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 72px;
+    height: 64px;
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(20px) saturate(1.5);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 0 0 1px rgba(16,185,129,0.05);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 2px 16px rgba(107,158,120,0.15);
   }
-  .header-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.4px; display: flex; align-items: center; gap: 9px; color: var(--text); }
-  .header-logo span { color: var(--accent); font-weight: 800; }
+  .header-logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .header-logo span { 
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   .header-actions { display: flex; gap: 8px; align-items: center; }
   .btn-icon {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-    border: 1.5px solid var(--border);
+    background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    border: 2px solid var(--border);
     color: var(--text);
     border-radius: var(--radius-sm);
-    padding: 10px 16px;
+    padding: 8px 14px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
-    transition: all var(--transition);
-    display: flex; align-items: center; gap: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 2px 8px rgba(44,40,37,0.08);
   }
   .btn-icon:hover { 
-    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    background: linear-gradient(135deg, var(--accent-glow), var(--bg3)); 
     border-color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(16,185,129,0.15);
+    box-shadow: 0 4px 16px rgba(107,158,120,0.2);
   }
   /* ─── Tabs ─── */
   .tabs-bar {
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--card), var(--bg2));
+    border-bottom: 2px solid var(--accent);
     display: flex;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 0 20px;
-    gap: 4px;
+    padding: 0 16px;
+    gap: 8px;
+    box-shadow: 0 2px 12px rgba(107,158,120,0.1);
   }
   .tabs-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
     background: none;
     border: none;
     color: var(--text3);
-    padding: 13px 20px;
+    padding: 14px 24px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    border-bottom: 2px solid transparent;
-    transition: all var(--transition);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    display: flex; align-items: center; gap: 7px;
+    display: flex; align-items: center; gap: 8px;
+    position: relative;
   }
-  .tab-btn:hover { color: var(--text); }
+  .tab-btn:hover { 
+    color: var(--accent); 
+    background: var(--accent-glow);
+    transform: translateY(-2px);
+  }
   .tab-btn.active { 
     color: var(--accent); 
     border-bottom-color: var(--accent);
+    background: var(--accent-glow);
     font-weight: 700;
   }
   .tab-panel { 
     display: none; 
-    padding: 32px 40px; 
-    width: 100%;
+    padding: 32px 24px; 
+    max-width: 1100px; 
+    margin: 0 auto;
   }
   .tab-panel.active { 
     display: block; 
@@ -127,55 +132,75 @@
   /* ─── Cards ─── */
   .card {
     background: var(--card);
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 28px;
-    box-shadow: var(--shadow);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(44,40,37,0.08);
     transition: all var(--transition);
   }
-  .card-sm { padding: 18px 20px; }
+  .card:hover {
+    box-shadow: 0 8px 30px rgba(107,158,120,0.15);
+    transform: translateY(-2px);
+  }
+  .card-sm { padding: 14px 16px; }
   .card-title {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 16px;
+    letter-spacing: 0.8px;
+    color: var(--text3);
+    font-weight: 600;
+    margin-bottom: 12px;
   }
   /* ─── Progress Bar ─── */
   .progress-wrap {
     background: var(--bg3);
     border-radius: 100px;
-    height: 16px;
+    height: 14px;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 8px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
   }
   .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    background: linear-gradient(90deg, #6b9e78, #89b595, #a8cab0);
     border-radius: 100px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(107,158,120,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
   /* ─── Juice Cards ─── */
   .juice-grid { display: grid; gap: 12px; }
   .juice-card {
-    background: var(--card);
-    border: 1.5px solid var(--border);
+    background: linear-gradient(135deg, var(--card2), var(--card));
+    border: 2px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 18px 20px;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 12px;
     align-items: start;
-    transition: all var(--transition);
-    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 12px rgba(44,40,37,0.06);
   }
   .juice-card:hover {
-    box-shadow: var(--shadow-hover);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(107,158,120,0.15);
     border-color: var(--accent);
-    transform: translateY(-3px);
   }
   .juice-card.done { opacity: 0.55; }
   .juice-card.done .juice-name { text-decoration: line-through; }
@@ -191,53 +216,61 @@
   .juice-ingr { font-size: 0.8rem; color: var(--text3); }
   .juice-kcal { font-size: 0.75rem; color: var(--accent3); margin-top: 4px; }
   .check-btn {
-    width: 48px; height: 48px;
+    min-width: 44px; min-height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
-    border: 2.5px solid var(--border);
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border: 3px solid var(--border);
+    background: linear-gradient(135deg, var(--bg2), white);
     color: var(--text3);
     cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 900;
     display: flex; align-items: center; justify-content: center;
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(44,40,37,0.1);
   }
   .check-btn:hover { 
     border-color: var(--accent); 
-    color: var(--accent);
-    transform: scale(1.1);
-    box-shadow: 0 4px 16px rgba(16,185,129,0.2);
+    color: var(--accent); 
+    transform: scale(1.15) rotate(10deg); 
+    box-shadow: 0 4px 16px rgba(107,158,120,0.3);
   }
+  .check-btn:active { transform: scale(0.95); }
   .check-btn.checked { 
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); 
     border-color: var(--accent); 
     color: #fff;
+    box-shadow: 0 4px 16px rgba(107,158,120,0.4);
+    animation: checkPulse 0.5s ease;
+  }
+  @keyframes checkPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
   }
   /* ─── Mood ─── */
-  .mood-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .mood-row { display: flex; gap: 12px; flex-wrap: wrap; }
   .mood-btn {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-    border: 2.5px solid var(--border);
+    background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    border: 3px solid var(--border);
     border-radius: 50px;
-    padding: 12px 20px;
+    padding: 10px 18px;
     cursor: pointer;
-    font-size: 1.4rem;
-    transition: all var(--transition);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    font-size: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(44,40,37,0.1);
   }
   .mood-btn:hover { 
     border-color: var(--accent); 
-    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
-    transform: scale(1.12);
-    box-shadow: 0 6px 20px rgba(16,185,129,0.15);
+    background: var(--accent-glow); 
+    transform: scale(1.2) rotate(5deg); 
+    box-shadow: 0 8px 20px rgba(107,158,120,0.3);
   }
   .mood-btn.active { 
     border-color: var(--accent); 
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-    color: white;
-    box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); 
+    transform: scale(1.25); 
+    box-shadow: 0 8px 24px rgba(107,158,120,0.4);
   }
   /* ─── Grid layouts ─── */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -248,14 +281,20 @@
   /* ─── Day plan column ─── */
   .day-col {
     background: var(--card);
-    border: 1.5px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 16px rgba(44,40,37,0.08);
+    transition: all 0.3s ease;
+  }
+  .day-col:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(107,158,120,0.15);
   }
   .day-col.today-col { 
     border-color: var(--accent); 
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.15), var(--shadow);
+    box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 24px rgba(107,158,120,0.25);
+    transform: scale(1.02);
   }
   .day-col-head {
     background: var(--bg3);
@@ -284,16 +323,16 @@
   .grid-control input[type=range] { width:90px; accent-color:var(--accent); cursor:pointer; }
   .recipe-card {
     background: var(--card);
-    border: 1.5px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    transition: all var(--transition);
-    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(44,40,37,0.08);
   }
   .recipe-card:hover { 
     border-color: var(--accent); 
-    transform: translateY(-6px);
-    box-shadow: 0 20px 60px rgba(16,185,129,0.25);
+    transform: translateY(-6px) scale(1.02); 
+    box-shadow: 0 12px 40px rgba(107,158,120,0.25);
   }
   .recipe-card-thumb {
     width: 100%; aspect-ratio: 16/9; object-fit: cover;
@@ -326,64 +365,44 @@
   .btn-delete:hover { background: #a03030; transform: scale(1.12); }
   /* ─── Buttons ─── */
   .btn {
-    padding: 12px 24px;
+    padding: 8px 16px;
     border-radius: var(--radius-sm);
     border: none;
     cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 600;
     transition: all var(--transition);
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 6px;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
-  .btn-primary { 
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%); 
-    color: #fff;
-  }
-  .btn-primary:hover { 
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(16,185,129,0.3);
-  }
-  .btn-secondary { 
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); 
-    border: 1.5px solid var(--border); 
-    color: var(--text); 
-  }
-  .btn-secondary:hover { 
-    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16,185,129,0.1);
-  }
-  .btn-danger { 
-    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); 
-    color: #fff; 
-  }
-  .btn-danger:hover { 
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(239,68,68,0.3);
-  }
-  .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-secondary { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
+  .btn-secondary:hover { background: var(--border); transform: translateY(-1px); }
+  .btn-secondary:active { transform: translateY(0) scale(0.98); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { opacity: 0.85; box-shadow: 0 4px 12px rgba(192,96,78,0.3); }
+  .btn-danger:active { transform: scale(0.98); }
+  .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
   /* ─── Inputs ─── */
   .input, textarea, select {
-    background: var(--card);
-    border: 1.5px solid var(--border);
+    background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--text);
-    padding: 12px 16px;
-    font-size: 0.95rem;
+    padding: 10px 14px;
+    font-size: 0.92rem;
     width: 100%;
-    transition: all var(--transition);
+    transition: all 0.3s ease;
     font-family: inherit;
   }
   .input:focus, textarea:focus, select:focus { 
     outline: none; 
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(16,185,129,0.1), 0 4px 12px rgba(16,185,129,0.15);
+    border-color: var(--accent); 
+    box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 12px rgba(107,158,120,0.15);
+    transform: translateY(-1px);
   }
   textarea { resize: vertical; min-height: 90px; }
   select option { background: var(--bg2); }
@@ -427,12 +446,15 @@
     gap: 8px;
   }
   .section-title { 
-    font-size: 1.25rem; 
+    font-size: 1.3rem; 
     font-weight: 800; 
     display: flex; 
     align-items: center; 
-    gap: 9px;
-    color: var(--text);
+    gap: 10px;
+    background: linear-gradient(135deg, var(--text), var(--text2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   /* ─── Modal ─── */
   .modal-overlay {
@@ -471,47 +493,78 @@
   .form-label { font-size: 0.8rem; font-weight: 600; color: var(--text3); margin-bottom: 6px; display: block; }
   /* ─── Alerts / Toasts ─── */
   #toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius);
-    padding: 14px 24px;
-    box-shadow: var(--shadow);
+    padding: 16px 28px;
+    box-shadow: 0 8px 32px rgba(44,40,37,0.2);
     z-index: 9999;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     opacity: 0;
-    transition: opacity 0.25s;
+    transition: opacity 0.3s, transform 0.3s;
     pointer-events: none;
-    max-width: 380px;
+    max-width: 400px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
   }
-  #toast.show { opacity: 1; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast:not(.show) { transform: translateX(-50%) translateY(20px); }
+  #toast.toast-success { 
+    background: linear-gradient(135deg, rgba(107,158,120,0.15), rgba(168,202,176,0.1)); 
+    border-color: var(--success); 
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(107,158,120,0.3);
+  }
+  #toast.toast-error { 
+    background: linear-gradient(135deg, rgba(192,96,78,0.15), rgba(192,96,78,0.05)); 
+    border-color: var(--danger); 
+    color: var(--danger);
+    box-shadow: 0 8px 32px rgba(192,96,78,0.3);
+  }
+  #toast.toast-warning { 
+    background: linear-gradient(135deg, rgba(196,137,58,0.15), rgba(196,137,58,0.05)); 
+    border-color: var(--warn); 
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(196,137,58,0.3);
+  }
+  #toast.toast-info { 
+    background: linear-gradient(135deg, rgba(74,144,164,0.15), rgba(74,144,164,0.05)); 
+    border-color: var(--info); 
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(74,144,164,0.3);
+  }
   /* ─── Spinner ─── */
   .spinner { 
-    width: 18px; 
-    height: 18px; 
-    border: 2px solid var(--border); 
+    width: 20px; 
+    height: 20px; 
+    border: 3px solid var(--border); 
     border-top-color: var(--accent); 
     border-radius: 50%; 
-    animation: spin 0.7s linear infinite; 
+    animation: spin 0.8s linear infinite; 
     display: inline-block;
+    box-shadow: 0 0 10px rgba(107,158,120,0.3);
   }
   @keyframes spin { 
     to { transform: rotate(360deg); } 
   }
   /* ─── Notify box ─── */
   .info-box {
-    background: var(--accent-glow);
-    border: 1px solid var(--accent);
-    border-left: 4px solid var(--accent);
+    background: linear-gradient(135deg, rgba(107,158,120,0.12), rgba(168,202,176,0.08));
+    border: 2px solid var(--accent);
+    border-left: 6px solid var(--accent);
     border-radius: var(--radius);
-    padding: 16px;
-    font-size: 0.88rem;
+    padding: 18px 20px;
+    font-size: 0.9rem;
     color: var(--text2);
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(107,158,120,0.15);
   }
-  .info-box strong { color: var(--accent); }
+  .info-box strong { color: var(--accent); font-weight: 700; }
   /* ─── Pills ─── */
   .pill { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; padding: 3px 10px; font-size: 0.75rem; color: var(--text3); }
   .pill.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
@@ -532,25 +585,31 @@
   .day-tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   /* ─── Prep box ─── */
   .prep-box {
-    background: var(--accent-glow);
-    border: 1px solid var(--accent);
-    border-left: 4px solid var(--accent);
+    background: linear-gradient(135deg, rgba(107,158,120,0.1), rgba(168,202,176,0.05));
+    border: 2px solid var(--accent);
+    border-left: 6px solid var(--accent);
     border-radius: var(--radius);
-    padding: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(107,158,120,0.15);
   }
   .prep-box h4 { 
     color: var(--accent); 
-    font-size: 0.95rem; 
-    margin-bottom: 12px; 
+    font-size: 1rem; 
+    margin-bottom: 14px; 
     font-weight: 700;
   }
   .prep-list { list-style: none; }
   .prep-list li { 
-    padding: 5px 0; 
-    font-size: 0.87rem; 
+    padding: 6px 0; 
+    font-size: 0.88rem; 
     color: var(--text2); 
     display: flex; 
     gap: 10px;
+    transition: all 0.2s;
+  }
+  .prep-list li:hover {
+    color: var(--accent);
+    transform: translateX(4px);
   }
   .prep-list li::before { 
     content: "◆"; 
@@ -560,32 +619,32 @@
     flex-shrink: 0;
   }
   /* ─── Stats row ─── */
-  .stats-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
   .stat-card { 
     flex: 1; 
-    min-width: 140px; 
-    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
-    border: 1.5px solid var(--border); 
+    min-width: 120px; 
+    background: linear-gradient(135deg, var(--card), var(--bg2));
+    border: 2px solid var(--border); 
     border-radius: var(--radius); 
-    padding: 24px 20px; 
+    padding: 20px 16px; 
     text-align: center;
-    box-shadow: var(--shadow);
-    transition: all var(--transition);
+    box-shadow: 0 4px 16px rgba(107,158,120,0.1);
+    transition: all 0.3s ease;
   }
   .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(16,185,129,0.15);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(107,158,120,0.2);
     border-color: var(--accent);
   }
   .stat-num { 
-    font-size: 2.5rem; 
+    font-size: 2rem; 
     font-weight: 900; 
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .stat-label { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; font-weight: 700; }
+  .stat-label { font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; font-weight: 600; }
   /* ─── Slot picker in modal ─── */
   .slot-picker { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-top: 8px; }
   .slot-pick-btn {
@@ -620,40 +679,22 @@
     border-radius: 50%; font-size: 0.75rem; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
   }
-  /* ─── Nutrition Grid ─── */
-  .nutrition-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .nutrition-item {
-    text-align: center;
-    padding: 10px;
-    background: rgba(255,255,255,0.6);
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(16,185,129,0.2);
-    font-size: 0.85rem;
-    color: var(--text2);
-  }
-  .nutrition-item strong {
-    display: block;
-    font-size: 1.3rem;
-    color: var(--accent);
-    margin-bottom: 2px;
-  }
   /* ─── Empty state ─── */
   .empty-state {
     text-align: center;
-    padding: 56px 28px;
+    padding: 64px 32px;
     color: var(--text3);
   }
   .empty-state .empty-icon { 
-    font-size: 3.5rem; 
-    margin-bottom: 14px;
-    opacity: 0.7;
+    font-size: 4rem; 
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
   }
-  .empty-state p { font-size: 0.95rem; line-height: 1.6; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .empty-state p { font-size: 1rem; line-height: 1.6; }
   /* ─── Scroll helper ─── */
   .mb-16 { margin-bottom: 16px; }
   .mb-8 { margin-bottom: 8px; }
@@ -684,12 +725,14 @@
 
 <!-- ===================== HEADER ===================== -->
 <header>
-  <a href="#" onclick="setTab('heute'); return false;" style="text-decoration:none; display:flex; align-items:center;">
-    <img src="logo-detox.png" alt="Detox Dashboard" style="height: 45px; width: auto;">
-  </a>
-  <button class="btn btn-primary" onclick="openDetoxSetup()" style="position: absolute; left: 50%; transform: translateX(-50%);">🚀 Detox starten</button>
+  <div class="header-logo">🌿 <span>Detox</span>Dashboard</div>
   <div class="header-actions">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('de')" id="langDe" title="Deutsch" aria-label="Sprache auf Deutsch ändern">🇩🇪</button>
+      <button class="lang-btn" onclick="setLang('es')" id="langEs" title="Español" aria-label="Cambiar idioma a español">🇪🇸</button>
+    </div>
     <button class="btn-icon" id="settingsBtn" onclick="openDetoxSetup()" aria-label="Detox Einstellungen öffnen">⚙️ Einstellungen</button>
+    <button class="btn-icon" id="apiBtn" onclick="openApiModal()" aria-label="API-Key verwalten">🔑 API-Key</button>
   </div>
 </header>
 
@@ -783,7 +826,6 @@
   <div class="section-head">
     <div class="section-title">🥤 Saft-Rezepte</div>
     <div class="flex-row">
-      <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()">⚡ Quick-Add</button>
       <button class="btn btn-secondary btn-sm" onclick="importFromKochApp()">🍳 Aus Koch-App importieren</button>
       <button class="btn btn-secondary btn-sm" onclick="openYtModal()">🔗 URL importieren</button>
       <button class="btn btn-secondary btn-sm" onclick="openAiRecipeModal()">🔍 Eigene Suche</button>
@@ -883,9 +925,6 @@
       <button class="btn btn-primary grow" onclick="saveSetup()">✅ Starten / Speichern</button>
       <button class="btn btn-danger btn-sm" onclick="resetDetox()">🗑 Reset</button>
     </div>
-    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-      <button class="btn btn-secondary grow" onclick="closeModal('setupModal'); openApiModal();">🔑 API-Key verwalten</button>
-    </div>
   </div>
 </div>
 
@@ -929,26 +968,6 @@
   </div>
 </div>
 
-<!-- Quick Add Recipe Modal -->
-<div class="modal-overlay" id="quickAddModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('quickAddModal')">✕</button>
-    <div class="modal-title">⚡ Schnell-Rezept hinzufügen</div>
-    <div class="form-group">
-      <label class="form-label">Rezept-Name</label>
-      <input type="text" class="input" id="quickAddName" placeholder="z.B. Grüner Energy Boost">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Zutaten (eine pro Zeile)</label>
-      <textarea class="input" id="quickAddIngredients" placeholder="1 Gurke&#10;2 grüne Äpfel&#10;Handvoll Spinat&#10;1 Zitrone" rows="5"></textarea>
-    </div>
-    <div class="flex-row">
-      <button class="btn btn-primary grow" onclick="saveQuickAdd()">✅ Hinzufügen</button>
-      <button class="btn btn-secondary" onclick="closeModal('quickAddModal')">Abbrechen</button>
-    </div>
-  </div>
-</div>
-
 <!-- Assign Slot Modal -->
 <div class="modal-overlay" id="slotModal">
   <div class="modal">
@@ -984,28 +1003,6 @@ const LS = {
 };
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'llama-3.1-8b-instant';
-
-// ═══════════════════════════════════════════════════════
-//  SECURITY & PERFORMANCE HELPERS
-// ═══════════════════════════════════════════════════════
-// XSS-Protection: Escape HTML special characters
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// Debounce: Limit function execution frequency
-function debounce(func, delay) {
-  let timeoutId;
-  return function(...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
-// Debounced version of renderRecipes for search
-const debouncedRenderRecipes = debounce(renderRecipes, 300);
 
 // ═══════════════════════════════════════════════════════
 //  INTERNATIONALISIERUNG (DE / ES)
@@ -1498,7 +1495,11 @@ function saveSetupData() { localStorage.setItem(LS.setup, JSON.stringify(setup))
 // ─── Toast ───
 function toast(msg, type = 'info', duration = 2500) {
   const t = document.getElementById('toast');
-  t.textContent = escapeHtml(msg);
+  t.className = 'toast-' + type;
+  // Icon basierend auf Typ
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const icon = icons[type] || '';
+  t.innerHTML = icon ? `<span>${icon}</span><span>${escapeHtml(msg)}</span>` : escapeHtml(msg);
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), duration);
 }
@@ -1518,30 +1519,10 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 
 // ESC-Taste schließt Modals
 document.addEventListener('keydown', (e) => {
-  // ESC closes modals
   if (e.key === 'Escape' || e.key === 'Esc') {
     document.querySelectorAll('.modal-overlay.open').forEach(m => {
       m.classList.remove('open');
     });
-    return;
-  }
-  
-  // Ignore shortcuts when typing in input fields
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  
-  // Number keys (1-4) switch tabs
-  if (e.key >= '1' && e.key <= '4') {
-    const tabs = ['heute', 'plan', 'rezepte', 'einkauf'];
-    setTab(tabs[parseInt(e.key) - 1]);
-    e.preventDefault();
-    return;
-  }
-  
-  // Ctrl/Cmd + S = Open Settings
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    openDetoxSetup();
-    e.preventDefault();
-    return;
   }
 });
 
@@ -1689,61 +1670,12 @@ function renderToday() {
     const dk = 'day' + d;
     if (progress.checked[dk]) doneJuices += progress.checked[dk].filter(Boolean).length;
   }
-  
-  // Calculate streak (consecutive days with all juices done)
-  let streak = 0;
-  for (let d = 1; d <= dayIdx; d++) {
-    const dk = 'day' + d;
-    const dayChecks = progress.checked[dk] || [];
-    if (dayChecks.filter(Boolean).length === 5) {
-      streak++;
-    } else {
-      streak = 0; // Reset if a day is incomplete
-    }
-  }
-  
   statsRow.innerHTML = `
     <div class="stat-card"><div class="stat-num">${totalDays}</div><div class="stat-label">${T.daysTotal}</div></div>
     <div class="stat-card"><div class="stat-num">${dayIdx >= 0 ? dayIdx + 1 : '–'}</div><div class="stat-label">${T.currentDay}</div></div>
     <div class="stat-card"><div class="stat-num">${totalJuices}</div><div class="stat-label">${T.juicesTotal}</div></div>
     <div class="stat-card"><div class="stat-num">${doneJuices}</div><div class="stat-label">${T.juicesDrunk}</div></div>
-    ${streak > 0 ? `<div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);"><div class="stat-num">🔥 ${streak}</div><div class="stat-label">Streak</div></div>` : ''}
   `;
-
-  // Nutrition summary for today
-  if (dayIdx >= 0 && dayKey && plan[dayKey]) {
-    const todayRecipes = plan[dayKey].map(rid => recipes.find(r => r.id === rid)).filter(Boolean);
-    const nutrition = {
-      kalorien: 0,
-      protein: 0,
-      kohlenhydrate: 0,
-      fett: 0,
-      ballaststoffe: 0
-    };
-    todayRecipes.forEach(r => {
-      if (r.kalorien) nutrition.kalorien += parseInt(r.kalorien) || 0;
-      if (r.protein) nutrition.protein += parseFloat(r.protein) || 0;
-      if (r.kohlenhydrate) nutrition.kohlenhydrate += parseFloat(r.kohlenhydrate) || 0;
-      if (r.fett) nutrition.fett += parseFloat(r.fett) || 0;
-      if (r.ballaststoffe) nutrition.ballaststoffe += parseFloat(r.ballaststoffe) || 0;
-    });
-    if (nutrition.kalorien > 0 || nutrition.protein > 0) {
-      const nutritionDiv = document.createElement('div');
-      nutritionDiv.className = 'card mb-16';
-      nutritionDiv.style.background = 'linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%)';
-      nutritionDiv.innerHTML = `
-        <div class="card-title">📊 Tages-Nährwerte</div>
-        <div class="nutrition-grid">
-          ${nutrition.kalorien ? `<div class="nutrition-item"><strong>${nutrition.kalorien}</strong> kcal</div>` : ''}
-          ${nutrition.protein ? `<div class="nutrition-item"><strong>${Math.round(nutrition.protein)}g</strong> Protein</div>` : ''}
-          ${nutrition.kohlenhydrate ? `<div class="nutrition-item"><strong>${Math.round(nutrition.kohlenhydrate)}g</strong> Kohlenhydrate</div>` : ''}
-          ${nutrition.fett ? `<div class="nutrition-item"><strong>${Math.round(nutrition.fett)}g</strong> Fett</div>` : ''}
-          ${nutrition.ballaststoffe ? `<div class="nutrition-item"><strong>${Math.round(nutrition.ballaststoffe)}g</strong> Ballaststoffe</div>` : ''}
-        </div>
-      `;
-      document.getElementById('detoxProgressCard').insertAdjacentElement('afterend', nutritionDiv);
-    }
-  }
 
   // Progress card
   const noHint = document.getElementById('noDetoxHint');
@@ -1823,34 +1755,11 @@ function renderToday() {
   } else prepBox.style.display = 'none';
 }
 
-let lastJuiceToggle = null;
-
 function toggleJuiceCheck(dayKey, idx) {
   if (!progress.checked[dayKey]) progress.checked[dayKey] = [false,false,false,false,false];
-  const previousState = progress.checked[dayKey][idx];
   progress.checked[dayKey][idx] = !progress.checked[dayKey][idx];
-  const newState = progress.checked[dayKey][idx];
-  
-  // Store for undo
-  lastJuiceToggle = { dayKey, idx, previousState };
-  
   saveProgress();
   renderToday();
-  
-  // Show undo toast
-  const undoBtn = `<button onclick="undoJuiceCheck()" style="background:#fff;color:var(--accent);padding:6px 12px;border-radius:8px;border:none;cursor:pointer;margin-left:12px;font-weight:700;">↶ Rückgängig</button>`;
-  toast((newState ? '✓ Abgehakt' : '○ Rückgängig gemacht') + undoBtn, 'success', 5000);
-}
-
-function undoJuiceCheck() {
-  if (!lastJuiceToggle) return;
-  const { dayKey, idx, previousState } = lastJuiceToggle;
-  if (!progress.checked[dayKey]) progress.checked[dayKey] = [false,false,false,false,false];
-  progress.checked[dayKey][idx] = previousState;
-  lastJuiceToggle = null;
-  saveProgress();
-  renderToday();
-  toast('↶ Rückgängig gemacht', 'info');
 }
 
 function checkAllToday() {
@@ -2065,68 +1974,16 @@ function openRecipeDetail(id) {
   const r = recipes.find(x => x.id === id);
   if (!r) return;
   const content = document.getElementById('recipeDetailContent');
-  
-  // Store recipe ID for portions calculator
-  content.dataset.recipeId = id;
-  content.dataset.portions = '1';
-  
-  renderRecipeDetail(r, 1);
-  openModal('recipeDetailModal');
-}
-
-function renderRecipeDetail(r, portionMultiplier = 1) {
-  const content = document.getElementById('recipeDetailContent');
-  const scaleIngredient = (ing) => {
-    if (typeof ing === 'string') {
-      // Try to extract number and multiply
-      const match = ing.match(/^(\d+(?:[.,]\d+)?)\s*(.*)$/);
-      if (match) {
-        const num = parseFloat(match[1].replace(',', '.')) * portionMultiplier;
-        return num.toString().replace('.', ',') + ' ' + match[2];
-      }
-      return ing;
-    }
-    if (ing.amount) {
-      const scaled = {...ing};
-      scaled.amount = (parseFloat(ing.amount) * portionMultiplier).toString().replace('.', ',');
-      return [scaled.amount, scaled.unit, scaled.name, scaled.usageInfo].filter(Boolean).join(' ');
-    }
-    return typeof ing === 'object' ? JSON.stringify(ing) : String(ing);
-  };
-  
   content.innerHTML = `
     <div class="modal-title">${r.titel}</div>
     <div class="recipe-meta flex-row mb-16">
-      ${r.kalorien ? `<span class="pill">🔥 ${Math.round(parseInt(r.kalorien) * portionMultiplier)} kcal</span>` : ''}
+      ${r.kalorien ? `<span class="pill">🔥 ${tMeta(r.kalorien)}</span>` : ''}
       ${r.zeitGesamt ? `<span class="pill">⏱ ${tMeta(r.zeitGesamt)}</span>` : ''}
       ${r.portionen ? `<span class="pill">🥤 ${tMeta(r.portionen)}</span>` : ''}
     </div>
-    
-    <div class="card mb-16" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
-      <div class="card-title">🔢 Portionsrechner</div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
-        <button class="btn btn-secondary btn-sm" onclick="adjustPortions(-0.5)">−</button>
-        <span style="font-size:1.3rem;font-weight:700;color:var(--text);min-width:60px;text-align:center">×${portionMultiplier}</span>
-        <button class="btn btn-secondary btn-sm" onclick="adjustPortions(0.5)">+</button>
-        <button class="btn btn-secondary btn-sm" onclick="adjustPortions('reset')">Reset</button>
-      </div>
-    </div>
-    
-    ${(r.kalorien || r.protein || r.fett || r.kohlenhydrate || r.ballaststoffe) ? `
-      <div class="card mb-16" style="background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);">
-        <div class="card-title">📊 Nährwerte pro Portion</div>
-        <div class="nutrition-grid">
-          ${r.kalorien ? `<div class="nutrition-item"><strong>${Math.round(parseInt(r.kalorien) * portionMultiplier)}</strong> kcal</div>` : ''}
-          ${r.protein ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.protein) * portionMultiplier)}g</strong> Protein</div>` : ''}
-          ${r.kohlenhydrate ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.kohlenhydrate) * portionMultiplier)}g</strong> Kohlenhydrate</div>` : ''}
-          ${r.fett ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.fett) * portionMultiplier)}g</strong> Fett</div>` : ''}
-          ${r.ballaststoffe ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.ballaststoffe) * portionMultiplier)}g</strong> Ballaststoffe</div>` : ''}
-        </div>
-      </div>
-    ` : ''}
     <div class="card-title">${T.ingredients}</div>
     <ul style="list-style:none;margin-bottom:16px">
-      ${(r.zutaten||[]).map(z => `<li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:0.88rem">◆ ${scaleIngredient(z)}</li>`).join('')}
+      ${(r.zutaten||[]).map(z => { const s = typeof z === 'string' ? z : [z.amount,z.unit,z.name,z.usageInfo].filter(Boolean).join(' '); return `<li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:0.88rem">◆ ${s}</li>`; }).join('')}
     </ul>
     <div class="card-title">${T.preparation}</div>
     <ol class="recipe-steps">
@@ -2134,24 +1991,7 @@ function renderRecipeDetail(r, portionMultiplier = 1) {
     </ol>
     ${r.youtubeId ? `<a href="https://youtube.com/watch?v=${r.youtubeId}" target="_blank" class="btn btn-secondary btn-sm mt-16">${T.watchVideo}</a>` : ''}
   `;
-}
-
-function adjustPortions(change) {
-  const content = document.getElementById('recipeDetailContent');
-  const recipeId = parseInt(content.dataset.recipeId);
-  const r = recipes.find(x => x.id === recipeId);
-  if (!r) return;
-  
-  let currentPortions = parseFloat(content.dataset.portions) || 1;
-  
-  if (change === 'reset') {
-    currentPortions = 1;
-  } else {
-    currentPortions = Math.max(0.5, currentPortions + change);
-  }
-  
-  content.dataset.portions = currentPortions;
-  renderRecipeDetail(r, currentPortions);
+  openModal('recipeDetailModal');
 }
 
 function deleteRecipe(id) {
@@ -2166,42 +2006,6 @@ function deleteRecipe(id) {
   renderRecipes();
   buildShopList();
   toast(T.recipeDeleted, 'info');
-}
-
-// ─── Quick Add Recipe ───
-function openQuickAddModal() {
-  document.getElementById('quickAddName').value = '';
-  document.getElementById('quickAddIngredients').value = '';
-  openModal('quickAddModal');
-  setTimeout(() => document.getElementById('quickAddName').focus(), 100);
-}
-
-function saveQuickAdd() {
-  const name = document.getElementById('quickAddName').value.trim();
-  const ingredients = document.getElementById('quickAddIngredients').value.trim();
-  
-  if (!name) {
-    toast('Bitte einen Namen eingeben', 'warning');
-    return;
-  }
-  
-  const zutaten = ingredients ? ingredients.split('\n').map(line => line.trim()).filter(Boolean) : [];
-  
-  const newRecipe = {
-    id: Date.now(),
-    titel: name,
-    zutaten: zutaten,
-    schritte: ['Alle Zutaten waschen', 'In den Entsafter geben', 'Frisch genießen'],
-    kategorie: 'saft',
-    portionen: '1 Portion',
-    zeitGesamt: '10 Min'
-  };
-  
-  recipes.push(newRecipe);
-  saveRecipes();
-  closeModal('quickAddModal');
-  setTab('rezepte');
-  toast('✅ Rezept "' + name + '" hinzugefügt!', 'success');
 }
 
 // ─── Import from Koch-App ───
@@ -2499,7 +2303,7 @@ async function aiGenerateRecipe() {
     // 3. Groq extrahiert Rezept
     loadingText.textContent = T.aiExtracting;
     const sys = 'Du bist ein Detox-Ernährungsexperte. Antworte NUR mit validem JSON, ohne Erklärungen.';
-    const user = `Erstelle ein Detox-Saft-Rezept für "${title}"${description ? ' basierend auf:\n' + description.slice(0,800) : ''}.\n\nFormat:\n{"titel":"...","zeitGesamt":"X Min","portionen":"1-2 Portionen","kalorien":"ca. X kcal","protein":"Xg","kohlenhydrate":"Xg","fett":"Xg","ballaststoffe":"Xg","zutaten":["Menge Zutat",...],"schritte":["Schritt",...]}`;
+    const user = `Erstelle ein Detox-Saft-Rezept für "${title}"${description ? ' basierend auf:\n' + description.slice(0,800) : ''}.\n\nFormat:\n{"titel":"...","zeitGesamt":"X Min","portionen":"1-2 Portionen","kalorien":"ca. X kcal","zutaten":["Menge Zutat",...],"schritte":["Schritt",...]}`;
     const raw = await groqChat(sys, user);
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('Kein JSON von KI erhalten');
@@ -2661,17 +2465,6 @@ document.addEventListener('DOMContentLoaded', () => {
   translateStaticUI();
   buildShopList();
   renderToday();
-  
-  // Register Service Worker for PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then((registration) => {
-        console.log('✅ Service Worker registered:', registration.scope);
-      })
-      .catch((error) => {
-        console.log('❌ Service Worker registration failed:', error);
-      });
-  }
 });
 </script>
 </body>
