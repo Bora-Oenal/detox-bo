@@ -1,0 +1,2678 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Dein persönlicher Detox-Plan Tracker mit Rezepten und Einkaufsliste">
+<meta name="theme-color" content="#10b981">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Detox">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo-detox.png">
+<title>🌿 Detox Dashboard</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --bg2: #f5f5f4;
+    --bg3: #e7e5e4;
+    --card: #ffffff;
+    --card2: #fefefe;
+    --border: #e5e5e5;
+    --accent: #10b981;
+    --accent2: #34d399;
+    --accent3: #6ee7b7;
+    --accent-glow: rgba(16,185,129,0.15);
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --info: #3b82f6;
+    --radius: 20px;
+    --radius-sm: 12px;
+    --shadow: 0 10px 40px rgba(0,0,0,0.08);
+    --shadow-sm: 0 4px 20px rgba(0,0,0,0.05);
+    --shadow-hover: 0 20px 60px rgba(16,185,129,0.2);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #fafaf9 0%, #f0fdfa 50%, #ecfdf5 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* ─── Header ─── */
+  header {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(16,185,129,0.1);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px) saturate(1.5);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 0 0 1px rgba(16,185,129,0.05);
+  }
+  .header-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.4px; display: flex; align-items: center; gap: 9px; color: var(--text); }
+  .header-logo span { color: var(--accent); font-weight: 800; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-icon {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .btn-icon:hover { 
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(16,185,129,0.15);
+  }
+  /* ─── Tabs ─── */
+  .tabs-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 20px;
+    gap: 4px;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    padding: 13px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { 
+    color: var(--accent); 
+    border-bottom-color: var(--accent);
+    font-weight: 700;
+  }
+  .tab-panel { 
+    display: none; 
+    padding: 32px 40px; 
+    width: 100%;
+  }
+  .tab-panel.active { 
+    display: block; 
+  }
+  /* ─── Cards ─── */
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+  }
+  .card-sm { padding: 18px 20px; }
+  .card-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  /* ─── Progress Bar ─── */
+  .progress-wrap {
+    background: var(--bg3);
+    border-radius: 100px;
+    height: 16px;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  }
+  /* ─── Juice Cards ─── */
+  .juice-grid { display: grid; gap: 12px; }
+  .juice-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: start;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+  .juice-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .juice-card.done { opacity: 0.55; }
+  .juice-card.done .juice-name { text-decoration: line-through; }
+  .juice-time {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 3px;
+  }
+  .juice-name { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+  .juice-ingr { font-size: 0.8rem; color: var(--text3); }
+  .juice-kcal { font-size: 0.75rem; color: var(--accent3); margin-top: 4px; }
+  .check-btn {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2.5px solid var(--border);
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .check-btn:hover { 
+    border-color: var(--accent); 
+    color: var(--accent);
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(16,185,129,0.2);
+  }
+  .check-btn.checked { 
+    background: var(--accent);
+    border-color: var(--accent); 
+    color: #fff;
+  }
+  /* ─── Mood ─── */
+  .mood-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .mood-btn {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border: 2.5px solid var(--border);
+    border-radius: 50px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: all var(--transition);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .mood-btn:hover { 
+    border-color: var(--accent); 
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    transform: scale(1.12);
+    box-shadow: 0 6px 20px rgba(16,185,129,0.15);
+  }
+  .mood-btn.active { 
+    border-color: var(--accent); 
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    color: white;
+    box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+  }
+  /* ─── Grid layouts ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  /* ─── Day plan column ─── */
+  .day-col {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .day-col.today-col { 
+    border-color: var(--accent); 
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.15), var(--shadow);
+  }
+  .day-col-head {
+    background: var(--bg3);
+    padding: 12px 14px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .day-col.today-col .day-col-head { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+  .day-badge { font-size: 0.7rem; background: var(--accent-glow); color: var(--accent); padding: 2px 8px; border-radius: 100px; }
+  .slot-item {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    transition: background var(--transition);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem;
+  }
+  .slot-item:hover { background: var(--bg3); }
+  .slot-item .slot-num { color: var(--accent); font-weight: 700; min-width: 20px; font-size: 0.75rem; }
+  .slot-empty { color: var(--text3); font-style: italic; }
+  /* ─── Recipe cards ─── */
+  .recipe-grid { display: grid; grid-template-columns: repeat(var(--grid-cols, 4), 1fr); gap: 16px; }
+  @media(max-width:900px) { .recipe-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width:560px) { .recipe-grid { grid-template-columns: 1fr; } }
+  .grid-control { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--text3); }
+  .grid-control input[type=range] { width:90px; accent-color:var(--accent); cursor:pointer; }
+  .recipe-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+  }
+  .recipe-card:hover { 
+    border-color: var(--accent); 
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(16,185,129,0.25);
+  }
+  .recipe-card-thumb {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover;
+    background: var(--bg3);
+    display: block;
+  }
+  .recipe-card-thumb-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; color: var(--text3);
+  }
+  .recipe-card-body { padding: 14px; position: relative; }
+  .recipe-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .badge-brazil { background: linear-gradient(135deg, #009c3b, #ffdf00); color: #002776; font-size: 0.62rem; padding: 1px 7px; border-radius: 8px; font-weight: 800; letter-spacing: 0.3px; }
+  .recipe-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; padding-right: 28px; }
+  .recipe-meta { font-size: 0.78rem; color: var(--text3); display: flex; gap: 10px; flex-wrap: wrap; }
+  .recipe-ingr-preview { font-size: 0.8rem; color: var(--text2); margin-top: 8px; line-height: 1.5; }
+  .recipe-actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .btn-delete {
+    position: absolute; top: 10px; right: 10px;
+    width: 24px; height: 24px;
+    background: var(--danger); color: #fff;
+    border: none; border-radius: 50%;
+    font-size: 0.75rem; font-weight: 900;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    line-height: 1; transition: all var(--transition);
+    flex-shrink: 0;
+  }
+  .btn-delete:hover { background: #a03030; transform: scale(1.12); }
+  /* ─── Buttons ─── */
+  .btn {
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 8px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .btn-primary { 
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%); 
+    color: #fff;
+  }
+  .btn-primary:hover { 
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+  }
+  .btn-secondary { 
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); 
+    border: 1.5px solid var(--border); 
+    color: var(--text); 
+  }
+  .btn-secondary:hover { 
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16,185,129,0.1);
+  }
+  .btn-danger { 
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); 
+    color: #fff; 
+  }
+  .btn-danger:hover { 
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(239,68,68,0.3);
+  }
+  .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* ─── Inputs ─── */
+  .input, textarea, select {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+  .input:focus, textarea:focus, select:focus { 
+    outline: none; 
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.1), 0 4px 12px rgba(16,185,129,0.15);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  select option { background: var(--bg2); }
+  .input-row { display: flex; gap: 10px; }
+  .input-row .input { flex: 1; }
+  /* ─── Shopping list ─── */
+  .shop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--card2);
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    transition: all var(--transition);
+  }
+  .shop-item.checked { opacity: 0.45; }
+  .shop-item.checked .shop-text { text-decoration: line-through; }
+  .shop-check {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    transition: all var(--transition);
+  }
+  .shop-check.checked { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .shop-text { font-size: 0.9rem; flex: 1; }
+  .shop-source { font-size: 0.72rem; color: var(--text3); }
+  /* ─── Section heading ─── */
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .section-title { 
+    font-size: 1.25rem; 
+    font-weight: 800; 
+    display: flex; 
+    align-items: center; 
+    gap: 9px;
+    color: var(--text);
+  }
+  /* ─── Modal ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .modal-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px 8px; cursor: pointer; color: var(--text3);
+    font-size: 1rem; transition: all var(--transition);
+  }
+  .modal-close:hover { color: var(--danger); border-color: var(--danger); }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 0.8rem; font-weight: 600; color: var(--text3); margin-bottom: 6px; display: block; }
+  /* ─── Alerts / Toasts ─── */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 24px;
+    box-shadow: var(--shadow);
+    z-index: 9999;
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+    max-width: 380px;
+    text-align: center;
+  }
+  #toast.show { opacity: 1; }
+  /* ─── Spinner ─── */
+  .spinner { 
+    width: 18px; 
+    height: 18px; 
+    border: 2px solid var(--border); 
+    border-top-color: var(--accent); 
+    border-radius: 50%; 
+    animation: spin 0.7s linear infinite; 
+    display: inline-block;
+  }
+  @keyframes spin { 
+    to { transform: rotate(360deg); } 
+  }
+  /* ─── Notify box ─── */
+  .info-box {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin-bottom: 18px;
+  }
+  .info-box strong { color: var(--accent); }
+  /* ─── Pills ─── */
+  .pill { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; padding: 3px 10px; font-size: 0.75rem; color: var(--text3); }
+  .pill.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+  /* ─── Day tabs ─── */
+  .day-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .day-tab-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text3);
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all var(--transition);
+  }
+  .day-tab-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .day-tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  /* ─── Prep box ─── */
+  .prep-box {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .prep-box h4 { 
+    color: var(--accent); 
+    font-size: 0.95rem; 
+    margin-bottom: 12px; 
+    font-weight: 700;
+  }
+  .prep-list { list-style: none; }
+  .prep-list li { 
+    padding: 5px 0; 
+    font-size: 0.87rem; 
+    color: var(--text2); 
+    display: flex; 
+    gap: 10px;
+  }
+  .prep-list li::before { 
+    content: "◆"; 
+    color: var(--accent); 
+    font-size: 0.6rem; 
+    margin-top: 6px; 
+    flex-shrink: 0;
+  }
+  /* ─── Stats row ─── */
+  .stats-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .stat-card { 
+    flex: 1; 
+    min-width: 140px; 
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+    border: 1.5px solid var(--border); 
+    border-radius: var(--radius); 
+    padding: 24px 20px; 
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+  }
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(16,185,129,0.15);
+    border-color: var(--accent);
+  }
+  .stat-num { 
+    font-size: 2.5rem; 
+    font-weight: 900; 
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; font-weight: 700; }
+  /* ─── Slot picker in modal ─── */
+  .slot-picker { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-top: 8px; }
+  .slot-pick-btn {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 8px 4px; cursor: pointer; text-align: center; font-size: 0.75rem; color: var(--text3);
+    transition: all var(--transition);
+  }
+  .slot-pick-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .slot-pick-btn.taken { opacity: 0.4; }
+  .day-pick-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-top: 8px; }
+  .day-pick-btn {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 8px 4px; cursor: pointer; text-align: center; font-size: 0.8rem; font-weight: 600;
+    color: var(--text3); transition: all var(--transition);
+  }
+  .day-pick-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* ─── Scrollable detail ─── */
+  .recipe-steps { counter-reset: step; padding: 0; list-style: none; }
+  .recipe-steps li {
+    counter-increment: step;
+    padding: 10px 12px 10px 44px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .recipe-steps li::before {
+    content: counter(step);
+    position: absolute; left: 10px; top: 10px;
+    width: 24px; height: 24px;
+    background: var(--accent); color: #fff;
+    border-radius: 50%; font-size: 0.75rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* ─── Nutrition Grid ─── */
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .nutrition-item {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(16,185,129,0.2);
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+  .nutrition-item strong {
+    display: block;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  /* ─── Empty state ─── */
+  .empty-state {
+    text-align: center;
+    padding: 56px 28px;
+    color: var(--text3);
+  }
+  .empty-state .empty-icon { 
+    font-size: 3.5rem; 
+    margin-bottom: 14px;
+    opacity: 0.7;
+  }
+  .empty-state p { font-size: 0.95rem; line-height: 1.6; }
+  /* ─── Scroll helper ─── */
+  .mb-16 { margin-bottom: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .flex-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .grow { flex: 1; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  /* ─── Animations ─── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .tab-panel.active { animation: fadeIn 0.3s ease-in; }
+  .modal.open { animation: fadeInScale 0.2s ease-out; }
+  /* ─── Language Switch ─── */
+  .lang-switch { display: flex; gap: 2px; margin-right: 4px; }
+  .lang-btn { background: none; border: 2px solid transparent; border-radius: 6px; padding: 2px 6px; cursor: pointer; font-size: 1.05rem; opacity: 0.45; transition: all var(--transition); line-height: 1; }
+  .lang-btn:hover { opacity: 0.75; }
+  .lang-btn.active { opacity: 1; border-color: var(--accent); background: var(--accent-glow); }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <a href="#" onclick="setTab('heute'); return false;" style="text-decoration:none; display:flex; align-items:center;">
+    <img src="logo-detox.png" alt="Detox Dashboard" style="height: 45px; width: auto;">
+  </a>
+  <button class="btn btn-primary" onclick="openDetoxSetup()" style="position: absolute; left: 50%; transform: translateX(-50%);">🚀 Detox starten</button>
+  <div class="header-actions">
+    <button class="btn-icon" id="settingsBtn" onclick="openDetoxSetup()" aria-label="Detox Einstellungen öffnen">⚙️ Einstellungen</button>
+  </div>
+</header>
+
+<!-- ===================== TABS ===================== -->
+<nav class="tabs-bar" role="tablist" aria-label="Hauptnavigation">
+  <button class="tab-btn active" onclick="setTab('heute')" id="tab-heute" role="tab" aria-selected="true" aria-controls="panel-heute">☀️ Heute</button>
+  <button class="tab-btn" onclick="setTab('plan')" id="tab-plan" role="tab" aria-selected="false" aria-controls="panel-plan">📅 4-Tage-Plan</button>
+  <button class="tab-btn" onclick="setTab('rezepte')" id="tab-rezepte" role="tab" aria-selected="false" aria-controls="panel-rezepte">🥤 Rezepte</button>
+  <button class="tab-btn" onclick="setTab('einkauf')" id="tab-einkauf" role="tab" aria-selected="false" aria-controls="panel-einkauf">🛒 Einkaufen</button>
+</nav>
+
+<!-- ===================== TAB: HEUTE ===================== -->
+<div class="tab-panel active" id="panel-heute" role="tabpanel" aria-labelledby="tab-heute">
+  <!-- Stats row -->
+  <div class="stats-row" id="todayStats"></div>
+
+  <!-- Progress -->
+  <div class="card mb-16" id="detoxProgressCard">
+    <div id="noDetoxHint" class="empty-state" style="padding:24px">
+      <div class="empty-icon">🌿</div>
+      <p style="margin-bottom:12px">Noch kein Detox gestartet. Klicke auf <strong>Einstellungen</strong> um deinen Starttermin festzulegen.</p>
+      <button class="btn btn-primary" onclick="openDetoxSetup()">🚀 Detox jetzt starten</button>
+    </div>
+    <div id="detoxProgressBody" style="display:none">
+      <div class="card-title">Fortschritt</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span id="progressLabel" style="font-size:0.9rem;color:var(--text2)"></span>
+        <span id="progressPct" style="font-size:0.85rem;color:var(--accent);font-weight:700"></span>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Juice checklist -->
+  <div class="section-head">
+    <div class="section-title">🥤 Heutige Säfte</div>
+    <button class="btn btn-secondary btn-sm" onclick="checkAllToday()">✓ Alle abhaken</button>
+  </div>
+  <div class="juice-grid" id="todayJuiceGrid">
+    <div class="empty-state"><div class="empty-icon">🥤</div><p>Weise Rezepte im 4-Tage-Plan zu, um sie hier zu sehen.</p></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="grid-2">
+    <!-- Mood -->
+    <div class="card">
+      <div class="card-title">Wohlbefinden heute</div>
+      <div class="mood-row" id="moodRow" role="radiogroup" aria-label="Wie fühlst du dich heute?">
+        <button class="mood-btn" onclick="setMood(1)" data-mood="1" title="Erschöpft" role="radio" aria-checked="false">😴</button>
+        <button class="mood-btn" onclick="setMood(2)" data-mood="2" title="Okay" role="radio" aria-checked="false">😐</button>
+        <button class="mood-btn" onclick="setMood(3)" data-mood="3" title="Gut" role="radio" aria-checked="false">🙂</button>
+        <button class="mood-btn" onclick="setMood(4)" data-mood="4" title="Sehr gut" role="radio" aria-checked="false">😊</button>
+        <button class="mood-btn" onclick="setMood(5)" data-mood="5" title="Fantastisch" role="radio" aria-checked="false">🌟</button>
+      </div>
+      <div id="moodNote" style="font-size:0.8rem;color:var(--text3);margin-top:8px"></div>
+    </div>
+    <!-- Notes -->
+    <div class="card">
+      <div class="card-title">Tagesnotiz</div>
+      <textarea id="todayNote" placeholder="Wie geht es dir? Was merkst du?" style="min-height:90px" oninput="saveTodayNote()" aria-label="Notizen für heute"></textarea>
+    </div>
+  </div>
+
+  <!-- Prep for tomorrow -->
+  <div id="prepTomorrowBox" class="prep-box mt-16" style="display:none">
+    <h4>🌙 Vorbereitung für morgen – Tue dies heute Abend:</h4>
+    <ul class="prep-list" id="prepTomorrowList"></ul>
+  </div>
+</div>
+
+<!-- ===================== TAB: 4-TAGE-PLAN ===================== -->
+<div class="tab-panel" id="panel-plan">
+  <div class="section-head">
+    <div class="section-title">📅 4-Tage-Plan</div>
+    <div class="flex-row">
+      <button class="btn btn-secondary btn-sm" onclick="clearPlan()">🗑 Plan leeren</button>
+      <button class="btn btn-primary btn-sm" id="aiPlanBtn" onclick="aiGeneratePlan()">✨ KI-Plan generieren</button>
+    </div>
+  </div>
+  <p style="font-size:0.83rem;color:var(--text3);margin-bottom:20px">Klicke auf einen Slot um ein Rezept zuzuweisen. 5 Säfte pro Tag (8:00 / 10:30 / 13:00 / 15:30 / 18:00).</p>
+  <div class="grid-4" id="planGrid"></div>
+  <div id="aiPlanLoading" style="display:none;text-align:center;padding:24px;color:var(--text3)">
+    <div class="spinner" style="width:24px;height:24px;margin:0 auto 10px"></div>
+    KI erstellt deinen personalisierten Detox-Plan…
+  </div>
+</div>
+
+<!-- ===================== TAB: REZEPTE ===================== -->
+<div class="tab-panel" id="panel-rezepte">
+  <div class="section-head">
+    <div class="section-title">🥤 Saft-Rezepte</div>
+    <div class="flex-row">
+      <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()">⚡ Quick-Add</button>
+      <button class="btn btn-secondary btn-sm" onclick="importFromKochApp()">🍳 Aus Koch-App importieren</button>
+      <button class="btn btn-secondary btn-sm" onclick="openYtModal()">🔗 URL importieren</button>
+      <button class="btn btn-secondary btn-sm" onclick="openAiRecipeModal()">🔍 Eigene Suche</button>
+      <button class="btn btn-primary btn-sm" id="autoSearchBtn" onclick="autoSearchRecipe()">✨ Automatisch suchen</button>
+    </div>
+  </div>
+  <!-- Search -->
+  <div id="autoSearchStatus" style="display:none;text-align:center;padding:20px;color:var(--text3)">
+    <div class="spinner" style="margin:0 auto 8px"></div>
+    <span id="autoSearchText">Suche Detox-Rezept auf YouTube…</span>
+  </div>
+  <div class="input-row mb-16" style="display:flex;gap:12px;align-items:center">
+    <input type="text" class="input" id="recipeSearch" placeholder="Rezepte suchen…" oninput="debouncedRenderRecipes()" style="flex:1" aria-label="Rezepte durchsuchen">
+    <div class="grid-control">
+      <span>Spalten</span>
+      <input type="range" id="gridColsSlider" min="3" max="6" value="4" oninput="setGridCols(this.value)">
+      <span id="gridColsLabel">4</span>
+    </div>
+  </div>
+  <div id="recipeGrid" class="recipe-grid"></div>
+</div>
+
+<!-- ===================== TAB: EINKAUFEN ===================== -->
+<div class="tab-panel" id="panel-einkauf">
+  <div class="section-head">
+    <div class="section-title">🛒 Einkaufsliste</div>
+    <div class="flex-row">
+      <button class="btn btn-secondary btn-sm" onclick="copyShopList()">📋 Kopieren</button>
+      <button class="btn btn-secondary btn-sm" onclick="uncheckAll()">↺ Zurücksetzen</button>
+      <button class="btn btn-secondary btn-sm" onclick="buildShopList()">🔄 Aus Plan</button>
+      <button class="btn btn-primary btn-sm" id="aiShopBtn" onclick="aiGenerateShopList()">✨ KI-Einkaufsliste</button>
+    </div>
+  </div>
+
+  <div class="info-box mb-16" id="shopInfoBox">
+    <strong>Tipp:</strong> Klicke auf <strong>✨ KI-Einkaufsliste</strong> – die KI erstellt automatisch eine vollständige Einkaufsliste für einen 4-Tage-Saft-Detox. Oder befülle zuerst den Plan und klicke auf „🔄 Aus Plan".
+  </div>
+  <div id="aiShopLoading" style="display:none;text-align:center;padding:24px;color:var(--text3)">
+    <div class="spinner" style="width:24px;height:24px;margin:0 auto 10px"></div>
+    KI erstellt deine Detox-Einkaufsliste…
+  </div>
+
+  <!-- View switcher -->
+  <div class="day-tabs" id="shopDayTabs">
+    <button class="day-tab-btn active" onclick="setShopView('all')" data-view="all">Alle 4 Tage</button>
+    <button class="day-tab-btn" onclick="setShopView('day1')" data-view="day1">Tag 1</button>
+    <button class="day-tab-btn" onclick="setShopView('day2')" data-view="day2">Tag 2</button>
+    <button class="day-tab-btn" onclick="setShopView('day3')" data-view="day3">Tag 3</button>
+    <button class="day-tab-btn" onclick="setShopView('day4')" data-view="day4">Tag 4</button>
+  </div>
+
+  <div id="shopListArea"></div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- API Key Modal -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('apiModal')">✕</button>
+    <div class="modal-title">🔑 Groq API-Key</div>
+    <p style="font-size:0.85rem;color:var(--text3);margin-bottom:16px">Wird für KI-Funktionen benötigt. Kostenlos erhältlich unter <a href="https://console.groq.com" target="_blank" style="color:var(--accent)">console.groq.com</a>. Wird nur lokal gespeichert.</p>
+    <div class="form-group">
+      <label class="form-label">API-Key</label>
+      <input type="password" class="input" id="apiKeyInput" placeholder="gsk_…" aria-label="Groq API-Key eingeben">
+    </div>
+    <div class="flex-row">
+      <button class="btn btn-primary grow" onclick="saveApiKey()">Speichern</button>
+      <button class="btn btn-secondary" onclick="closeModal('apiModal')">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detox Setup Modal -->
+<div class="modal-overlay" id="setupModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('setupModal')">✕</button>
+    <div class="modal-title">🌿 Detox Einstellungen</div>
+    <div class="form-group">
+      <label class="form-label">Startdatum</label>
+      <input type="date" class="input" id="setupStartDate" aria-label="Detox-Startdatum auswählen">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anzahl Tage (Standard: 4)</label>
+      <select class="input" id="setupDays">
+        <option value="3">3 Tage</option>
+        <option value="4" selected>4 Tage</option>
+        <option value="5">5 Tage</option>
+        <option value="7">7 Tage</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Programm-Name</label>
+      <input type="text" class="input" id="setupName" placeholder="Frühjahrs-Detox 2026" value="Frühjahrs-Detox" aria-label="Name des Detox-Programms" minlength="2" maxlength="50">
+    </div>
+    <div class="flex-row mt-16">
+      <button class="btn btn-primary grow" onclick="saveSetup()">✅ Starten / Speichern</button>
+      <button class="btn btn-danger btn-sm" onclick="resetDetox()">🗑 Reset</button>
+    </div>
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+      <button class="btn btn-secondary grow" onclick="closeModal('setupModal'); openApiModal();">🔑 API-Key verwalten</button>
+    </div>
+  </div>
+</div>
+
+<!-- URL Import Modal -->
+<div class="modal-overlay" id="ytModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('ytModal')">✕</button>
+    <div class="modal-title">🔗 Rezept von URL importieren</div>
+    <p style="font-size:0.85rem;color:var(--text3);margin-bottom:16px">Füge einen beliebigen Link ein – YouTube, Foodblog, Gesundheitsseite etc. Die KI liest die Seite und extrahiert automatisch alle Rezeptinfos.</p>
+    <div class="form-group">
+      <label class="form-label">URL (YouTube, Blog, Website…)</label>
+      <input type="text" class="input" id="ytUrl" placeholder="https://… (beliebige Website oder YouTube)">
+    </div>
+    <div id="ytLoading" style="display:none;text-align:center;padding:16px;color:var(--text3)">
+      <div class="spinner" style="margin:0 auto 8px"></div><span id="ytLoadingText">Lade Seite…</span>
+    </div>
+    <div class="flex-row mt-8">
+      <button class="btn btn-primary grow" onclick="importYoutube()">🔗 Importieren</button>
+      <button class="btn btn-secondary" onclick="closeModal('ytModal')">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Recipe Modal -->
+<div class="modal-overlay" id="aiRecipeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('aiRecipeModal')">✕</button>
+    <div class="modal-title">🔍 Rezept suchen</div>
+    <p style="font-size:0.85rem;color:var(--text3);margin-bottom:16px">Gib einen Saft oder eine Zutatenkombination ein. Die App sucht ein echtes YouTube-Video dazu und extrahiert automatisch das Rezept mit Bild.</p>
+    <div class="form-group">
+      <label class="form-label">Was suchst du?</label>
+      <input type="text" class="input" id="aiRecipeInput" placeholder="z.B. Ingwer Zitrone Kurkuma Detox Saft…" onkeydown="if(event.key==='Enter')aiGenerateRecipe()">
+    </div>
+    <div id="aiRecipeLoading" style="display:none;text-align:center;padding:16px;color:var(--text3)">
+      <div class="spinner" style="margin:0 auto 8px"></div><span id="aiRecipeLoadingText">Suche YouTube-Video…</span>
+    </div>
+    <div class="flex-row mt-8">
+      <button class="btn btn-primary grow" onclick="aiGenerateRecipe()">🔍 Suchen & importieren</button>
+      <button class="btn btn-secondary" onclick="closeModal('aiRecipeModal')">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Add Recipe Modal -->
+<div class="modal-overlay" id="quickAddModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('quickAddModal')">✕</button>
+    <div class="modal-title">⚡ Schnell-Rezept hinzufügen</div>
+    <div class="form-group">
+      <label class="form-label">Rezept-Name</label>
+      <input type="text" class="input" id="quickAddName" placeholder="z.B. Grüner Energy Boost">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Zutaten (eine pro Zeile)</label>
+      <textarea class="input" id="quickAddIngredients" placeholder="1 Gurke&#10;2 grüne Äpfel&#10;Handvoll Spinat&#10;1 Zitrone" rows="5"></textarea>
+    </div>
+    <div class="flex-row">
+      <button class="btn btn-primary grow" onclick="saveQuickAdd()">✅ Hinzufügen</button>
+      <button class="btn btn-secondary" onclick="closeModal('quickAddModal')">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Slot Modal -->
+<div class="modal-overlay" id="slotModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('slotModal')">✕</button>
+    <div class="modal-title" id="slotModalTitle">Rezept zuweisen</div>
+    <div id="slotRecipeList"></div>
+  </div>
+</div>
+
+<!-- Recipe Detail Modal -->
+<div class="modal-overlay" id="recipeDetailModal">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-close" onclick="closeModal('recipeDetailModal')">✕</button>
+    <div id="recipeDetailContent"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONSTANTS & STATE
+// ═══════════════════════════════════════════════════════
+const TIMES = ['8:00', '10:30', '13:00', '15:30', '18:00'];
+const LS = {
+  recipes: 'detox_recipes',
+  plan: 'detox_plan',
+  progress: 'detox_progress',
+  shop: 'detox_shop',
+  setup: 'detox_setup',
+  theme: 'detox_theme'
+};
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.1-8b-instant';
+
+// ═══════════════════════════════════════════════════════
+//  SECURITY & PERFORMANCE HELPERS
+// ═══════════════════════════════════════════════════════
+// XSS-Protection: Escape HTML special characters
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Debounce: Limit function execution frequency
+function debounce(func, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+// Debounced version of renderRecipes for search
+const debouncedRenderRecipes = debounce(renderRecipes, 300);
+
+// ═══════════════════════════════════════════════════════
+//  INTERNATIONALISIERUNG (DE / ES)
+// ═══════════════════════════════════════════════════════
+const I18N = {
+  de: {
+    settings: '⚙️ Einstellungen', apiKeyBtn: '🔑 API-Key',
+    tabToday: '☀️ Heute', tabPlan: '📅 4-Tage-Plan', tabRecipes: '🥤 Rezepte', tabShop: '🛒 Einkaufen',
+    daysTotal: 'Tage gesamt', currentDay: 'Aktueller Tag', juicesTotal: 'Säfte gesamt', juicesDrunk: 'Säfte getrunken',
+    progress: 'Fortschritt',
+    noDetoxHint: 'Noch kein Detox gestartet. Klicke auf <strong>Einstellungen</strong> um deinen Starttermin festzulegen.',
+    startDetox: '🚀 Detox jetzt starten',
+    dayXofY: (x,y) => `Tag ${x} von ${y}`, completed: 'abgeschlossen',
+    todayJuices: '🥤 Heutige Säfte', checkAll: '✓ Alle abhaken',
+    assignHint: 'Weise Rezepte im 4-Tage-Plan zu, um sie hier zu sehen.',
+    noRecipeAssigned: 'Kein Rezept zugewiesen',
+    detoxDone: 'Detox abgeschlossen 🎉', detoxNotStarted: 'Detox noch nicht gestartet',
+    assignDayHint: d => `Weise im <strong>4-Tage-Plan</strong> Rezepte zu Tag ${d} zu.`,
+    wellbeing: 'Wohlbefinden heute',
+    moodLabels: ['','Erschöpft','Okay','Gut','Sehr gut','Fantastisch'],
+    moodToday: 'Heute: ',
+    dayNote: 'Tagesnotiz', notePlaceholder: 'Wie geht es dir? Was merkst du?',
+    prepTitle: '🌙 Vorbereitung für morgen – Tue dies heute Abend:',
+    planTitle: '📅 4-Tage-Plan', clearPlan: '🗑 Plan leeren', aiPlan: '✨ KI-Plan generieren',
+    planHint: 'Klicke auf einen Slot um ein Rezept zuzuweisen. 5 Säfte pro Tag (8:00 / 10:30 / 13:00 / 15:30 / 18:00).',
+    aiPlanLoading: 'KI erstellt deinen personalisierten Detox-Plan…',
+    dayX: x => `Tag ${x}`, today: 'Heute', addSlot: '+ Hinzufügen',
+    confirmClearPlan: 'Plan wirklich leeren?', planCleared: '↺ Plan geleert', aiPlanDone: '✅ KI-Plan erstellt!',
+    recipesTitle: '🥤 Saft-Rezepte', importKoch: '🍳 Aus Koch-App importieren',
+    importUrl: '🔗 URL importieren', ownSearch: '🔍 Eigene Suche', autoSearch: '✨ Automatisch suchen',
+    searchingYT: 'Suche Detox-Rezept auf YouTube…', searchPlaceholder: 'Rezepte suchen…', columns: 'Spalten',
+    noRecipes: 'Noch keine Rezepte vorhanden.<br>Importiere via YouTube oder lass die KI eines erstellen.',
+    details: '📋 Details', video: '▶️ Video', website: '🔗 Website', detoxJuice: 'Detox-Saft',
+    ingredients: 'Zutaten', preparation: 'Zubereitung', watchVideo: '▶️ Video ansehen',
+    confirmDeleteRecipe: 'Rezept wirklich löschen?', recipeDeleted: '🗑 Rezept gelöscht',
+    shopTitle: '🛒 Einkaufsliste', copy: '📋 Kopieren', reset: '↺ Zurücksetzen',
+    fromPlan: '🔄 Aus Plan', aiShop: '✨ KI-Einkaufsliste',
+    shopTip: '<strong>Tipp:</strong> Klicke auf <strong>✨ KI-Einkaufsliste</strong> – die KI erstellt automatisch eine vollständige Einkaufsliste für einen 4-Tage-Saft-Detox. Oder befülle zuerst den Plan und klicke auf „🔄 Aus Plan".',
+    aiShopLoading: 'KI erstellt deine Detox-Einkaufsliste…',
+    allDays: 'Alle 4 Tage',
+    shopEmpty: 'Noch keine Liste. Klicke auf <strong>✨ KI-Einkaufsliste</strong> oder befülle den 4-Tage-Plan und klicke <strong>🔄 Aus Plan</strong>.',
+    allReset: '↺ Alle zurückgesetzt', listCopied: '📋 Liste kopiert!', listEmpty: '⚠️ Liste ist leer', copyFailed: '❌ Kopieren fehlgeschlagen',
+    groqApiTitle: '🔑 Groq API-Key',
+    groqApiDesc: 'Wird für KI-Funktionen benötigt. Kostenlos erhältlich unter <a href="https://console.groq.com" target="_blank" style="color:var(--accent)">console.groq.com</a>. Wird nur lokal gespeichert.',
+    save: 'Speichern', cancel: 'Abbrechen', apiKeySaved: '✅ API-Key gespeichert',
+    setupTitle: '🌿 Detox Einstellungen', startDate: 'Startdatum',
+    numDays: 'Anzahl Tage (Standard: 4)', xDays: n => `${n} Tage`,
+    programName: 'Programm-Name', saveStart: '✅ Starten / Speichern', resetBtnText: '🗑 Reset',
+    confirmReset: 'Wirklich alles zurücksetzen? (Plan bleibt erhalten)',
+    detoxStarted: '✅ Detox gestartet: ', detoxReset: '↺ Detox zurückgesetzt',
+    urlImportTitle: '🔗 Rezept von URL importieren',
+    urlImportDesc: 'Füge einen beliebigen Link ein – YouTube, Foodblog, Gesundheitsseite etc. Die KI liest die Seite und extrahiert automatisch alle Rezeptinfos.',
+    urlLabel: 'URL (YouTube, Blog, Website…)', urlPlaceholder: 'https://… (beliebige Website oder YouTube)',
+    loadingPage: 'Lade Seite…', importBtn: '🔗 Importieren',
+    aiRecipeTitle: '🔍 Rezept suchen',
+    aiRecipeDesc: 'Gib einen Saft oder eine Zutatenkombination ein. Die App sucht ein echtes YouTube-Video dazu und extrahiert automatisch das Rezept mit Bild.',
+    whatSearch: 'Was suchst du?', aiRecipePlaceholder: 'z.B. Ingwer Zitrone Kurkuma Detox Saft…',
+    searchingVideo: 'Suche YouTube-Video…', searchImport: '🔍 Suchen & importieren',
+    assignRecipeTitle: 'Rezept zuweisen',
+    noRecipesSlot: 'Noch keine Rezepte. Füge im Tab <strong>Rezepte</strong> welche hinzu.',
+    slotTitle: (d,s,t) => `Tag ${d} · Saft ${s} (${t})`,
+    deleteTitle: 'Löschen',
+    enterApiKey: '⚠️ Bitte zuerst Groq API-Key eingeben.',
+    allChecked: '✅ Alle Säfte für heute abgehakt!',
+    detoxNotStartedToast: '⚠️ Detox noch nicht gestartet',
+    recipeAssigned: '✅ Rezept zugewiesen',
+    noKochData: '⚠️ Keine Koch-App Daten gefunden. Öffne zuerst die Koch-App im selben Browser.',
+    kochReadError: '❌ Fehler beim Lesen der Koch-App Daten',
+    noMatchingRecipes: 'ℹ️ Keine passenden Rezepte gefunden.',
+    alreadyImported: 'ℹ️ Alle passenden Rezepte sind bereits vorhanden.',
+    importedX: n => `✅ ${n} Rezept${n > 1 ? 'e' : ''} aus Koch-App importiert!`,
+    recipeImported: '✅ Rezept importiert: ', enterUrl: '⚠️ Bitte URL eingeben',
+    enterSearch: '⚠️ Bitte Suchbegriff eingeben',
+    newRecipe: '✅ Neues Rezept: ', recipeFound: '✅ Rezept gefunden: ',
+    aiShopDone: '✅ KI-Einkaufsliste erstellt!',
+    error: '❌ Fehler: ', autoSearchFailed: '❌ Automatische Suche fehlgeschlagen: ',
+    addRecipesFirst: '⚠️ Füge zuerst Rezepte hinzu, damit die KI einen Plan erstellen kann.',
+    loadingYT: 'Lade YouTube-Video…', loadingWeb: 'Lade Webseite…',
+    aiExtracting: 'KI extrahiert Rezept…',
+    searchingX: q => `Suche: "${q}" auf YouTube…`,
+    videoFound: 'Video gefunden – lese Rezept…', aiCreating: 'KI erstellt Rezept…',
+    aiTip: '💡 KI-Hinweis:', defaultName: 'Frühjahrs-Detox',
+    setupNamePlaceholder: 'Frühjahrs-Detox 2026',
+    apiKeyLabel: 'API-Key',
+    portionen: 'Portionen', minuten: 'Min',
+    categoryMap: {
+      'Detox-Suppe': 'Detox-Suppe', 'Erdsaft': 'Erdsaft', 'Lebendiger Saft': 'Lebendiger Saft',
+      'Gewürzmilch': 'Gewürzmilch', 'Detox-Saft': 'Detox-Saft', 'Smoothie': 'Smoothie',
+      'Getränk': 'Getränk', 'Saft': 'Saft'
+    },
+  },
+  es: {
+    settings: '⚙️ Ajustes', apiKeyBtn: '🔑 API-Key',
+    tabToday: '☀️ Hoy', tabPlan: '📅 Plan 4 días', tabRecipes: '🥤 Recetas', tabShop: '🛒 Compras',
+    daysTotal: 'Días totales', currentDay: 'Día actual', juicesTotal: 'Jugos totales', juicesDrunk: 'Jugos tomados',
+    progress: 'Progreso',
+    noDetoxHint: 'Aún no has empezado el detox. Haz clic en <strong>Ajustes</strong> para fijar tu fecha de inicio.',
+    startDetox: '🚀 Iniciar detox',
+    dayXofY: (x,y) => `Día ${x} de ${y}`, completed: 'completado',
+    todayJuices: '🥤 Jugos de hoy', checkAll: '✓ Marcar todos',
+    assignHint: 'Asigna recetas en el plan de 4 días para verlas aquí.',
+    noRecipeAssigned: 'Sin receta asignada',
+    detoxDone: 'Detox completado 🎉', detoxNotStarted: 'Detox aún no iniciado',
+    assignDayHint: d => `Asigna recetas en el <strong>plan de 4 días</strong> al día ${d}.`,
+    wellbeing: 'Bienestar de hoy',
+    moodLabels: ['','Agotado','Normal','Bueno','Muy bueno','Fantástico'],
+    moodToday: 'Hoy: ',
+    dayNote: 'Nota del día', notePlaceholder: '¿Cómo te sientes? ¿Qué notas?',
+    prepTitle: '🌙 Preparación para mañana – Haz esto esta noche:',
+    planTitle: '📅 Plan de 4 días', clearPlan: '🗑 Vaciar plan', aiPlan: '✨ Plan con IA',
+    planHint: 'Haz clic en un espacio para asignar una receta. 5 jugos al día (8:00 / 10:30 / 13:00 / 15:30 / 18:00).',
+    aiPlanLoading: 'La IA está creando tu plan detox personalizado…',
+    dayX: x => `Día ${x}`, today: 'Hoy', addSlot: '+ Añadir',
+    confirmClearPlan: '¿Vaciar el plan?', planCleared: '↺ Plan vaciado', aiPlanDone: '✅ ¡Plan IA creado!',
+    recipesTitle: '🥤 Recetas de jugos', importKoch: '🍳 Importar de Koch-App',
+    importUrl: '🔗 Importar URL', ownSearch: '🔍 Búsqueda propia', autoSearch: '✨ Búsqueda automática',
+    searchingYT: 'Buscando receta detox en YouTube…', searchPlaceholder: 'Buscar recetas…', columns: 'Columnas',
+    noRecipes: 'Aún no hay recetas.<br>Importa desde YouTube o deja que la IA cree una.',
+    details: '📋 Detalles', video: '▶️ Video', website: '🔗 Web', detoxJuice: 'Jugo detox',
+    ingredients: 'Ingredientes', preparation: 'Preparación', watchVideo: '▶️ Ver video',
+    confirmDeleteRecipe: '¿Eliminar la receta?', recipeDeleted: '🗑 Receta eliminada',
+    shopTitle: '🛒 Lista de compras', copy: '📋 Copiar', reset: '↺ Restablecer',
+    fromPlan: '🔄 Del plan', aiShop: '✨ Lista IA',
+    shopTip: '<strong>Consejo:</strong> Haz clic en <strong>✨ Lista IA</strong> – la IA creará automáticamente una lista completa para un detox de jugos de 4 días. O llena primero el plan y haz clic en "🔄 Del plan".',
+    aiShopLoading: 'La IA está creando tu lista de compras detox…',
+    allDays: 'Los 4 días',
+    shopEmpty: 'Aún no hay lista. Haz clic en <strong>✨ Lista IA</strong> o llena el plan de 4 días y haz clic en <strong>🔄 Del plan</strong>.',
+    allReset: '↺ Todo restablecido', listCopied: '📋 ¡Lista copiada!', listEmpty: '⚠️ La lista está vacía', copyFailed: '❌ Error al copiar',
+    groqApiTitle: '🔑 Groq API-Key',
+    groqApiDesc: 'Necesario para funciones de IA. Disponible gratis en <a href="https://console.groq.com" target="_blank" style="color:var(--accent)">console.groq.com</a>. Se almacena solo localmente.',
+    save: 'Guardar', cancel: 'Cancelar', apiKeySaved: '✅ API-Key guardado',
+    setupTitle: '🌿 Ajustes del detox', startDate: 'Fecha de inicio',
+    numDays: 'Número de días (estándar: 4)', xDays: n => `${n} días`,
+    programName: 'Nombre del programa', saveStart: '✅ Iniciar / Guardar', resetBtnText: '🗑 Reiniciar',
+    confirmReset: '¿Reiniciar todo? (El plan se conserva)',
+    detoxStarted: '✅ Detox iniciado: ', detoxReset: '↺ Detox reiniciado',
+    urlImportTitle: '🔗 Importar receta desde URL',
+    urlImportDesc: 'Pega cualquier enlace – YouTube, blog de comida, web de salud, etc. La IA lee la página y extrae automáticamente toda la info de la receta.',
+    urlLabel: 'URL (YouTube, Blog, Web…)', urlPlaceholder: 'https://… (cualquier sitio web o YouTube)',
+    loadingPage: 'Cargando página…', importBtn: '🔗 Importar',
+    aiRecipeTitle: '🔍 Buscar receta',
+    aiRecipeDesc: 'Ingresa un jugo o combinación de ingredientes. La app buscará un video real de YouTube y extraerá automáticamente la receta con imagen.',
+    whatSearch: '¿Qué buscas?', aiRecipePlaceholder: 'ej. jengibre limón cúrcuma jugo detox…',
+    searchingVideo: 'Buscando video en YouTube…', searchImport: '🔍 Buscar e importar',
+    assignRecipeTitle: 'Asignar receta',
+    noRecipesSlot: 'Sin recetas aún. Añade algunas en la pestaña <strong>Recetas</strong>.',
+    slotTitle: (d,s,t) => `Día ${d} · Jugo ${s} (${t})`,
+    deleteTitle: 'Eliminar',
+    enterApiKey: '⚠️ Primero ingresa tu Groq API-Key.',
+    allChecked: '✅ ¡Todos los jugos de hoy marcados!',
+    detoxNotStartedToast: '⚠️ El detox aún no ha iniciado',
+    recipeAssigned: '✅ Receta asignada',
+    noKochData: '⚠️ No se encontraron datos de Koch-App. Abre primero la Koch-App en el mismo navegador.',
+    kochReadError: '❌ Error al leer datos de Koch-App',
+    noMatchingRecipes: 'ℹ️ No se encontraron recetas coincidentes.',
+    alreadyImported: 'ℹ️ Todas las recetas coincidentes ya existen.',
+    importedX: n => `✅ ${n} receta${n > 1 ? 's' : ''} importada${n > 1 ? 's' : ''} de Koch-App.`,
+    recipeImported: '✅ Receta importada: ', enterUrl: '⚠️ Ingresa una URL',
+    enterSearch: '⚠️ Ingresa un término de búsqueda',
+    newRecipe: '✅ Nueva receta: ', recipeFound: '✅ Receta encontrada: ',
+    aiShopDone: '✅ ¡Lista de compras IA creada!',
+    error: '❌ Error: ', autoSearchFailed: '❌ Búsqueda automática fallida: ',
+    addRecipesFirst: '⚠️ Primero añade recetas para que la IA pueda crear un plan.',
+    loadingYT: 'Cargando video de YouTube…', loadingWeb: 'Cargando página web…',
+    aiExtracting: 'La IA extrae la receta…',
+    searchingX: q => `Buscando: "${q}" en YouTube…`,
+    videoFound: 'Video encontrado – leyendo receta…', aiCreating: 'La IA crea la receta…',
+    aiTip: '💡 Consejo IA:', defaultName: 'Detox Primavera',
+    setupNamePlaceholder: 'Detox Primavera 2026',
+    apiKeyLabel: 'API-Key',
+    portionen: 'Porciones', minuten: 'min',
+    categoryMap: {
+      'Detox-Suppe': 'Sopa detox', 'Erdsaft': 'Jugo de raíces', 'Lebendiger Saft': 'Jugo vivo',
+      'Gewürzmilch': 'Leche especiada', 'Detox-Saft': 'Jugo detox', 'Smoothie': 'Smoothie',
+      'Getränk': 'Bebida', 'Saft': 'Jugo'
+    },
+  }
+};
+let lang = localStorage.getItem('detox_lang') || 'de';
+let T = I18N[lang];
+
+// ─── Helfer: Kategorie & Meta übersetzen ───
+function tCat(cat) { return (T.categoryMap && T.categoryMap[cat]) || cat || T.detoxJuice; }
+function tMeta(str) {
+  if (!str || lang === 'de') return str;
+  return str.replace(/Portionen/gi, T.portionen).replace(/\bMin\b/g, T.minuten);
+}
+
+// ─── translateStaticUI – aktualisiert alle festen HTML-Elemente ───
+function translateStaticUI() {
+  document.getElementById('langDe').classList.toggle('active', lang==='de');
+  document.getElementById('langEs').classList.toggle('active', lang==='es');
+  document.documentElement.lang = lang;
+  // Header
+  document.getElementById('settingsBtn').innerHTML = T.settings;
+  document.getElementById('apiBtn').innerHTML = T.apiKeyBtn;
+  // Tabs
+  document.getElementById('tab-heute').innerHTML = T.tabToday;
+  document.getElementById('tab-plan').innerHTML = T.tabPlan;
+  document.getElementById('tab-rezepte').innerHTML = T.tabRecipes;
+  document.getElementById('tab-einkauf').innerHTML = T.tabShop;
+  // Today panel
+  const noDetox = document.getElementById('noDetoxHint');
+  if (noDetox) { noDetox.querySelector('p').innerHTML = T.noDetoxHint; noDetox.querySelector('button').innerHTML = T.startDetox; }
+  const progBody = document.getElementById('detoxProgressBody');
+  if (progBody) { const ct = progBody.querySelector('.card-title'); if(ct) ct.textContent = T.progress; }
+  const todayHead = document.querySelector('#panel-heute > .section-head');
+  if (todayHead) { todayHead.querySelector('.section-title').innerHTML = T.todayJuices; todayHead.querySelector('button').textContent = T.checkAll; }
+  const emptyJuice = document.querySelector('#todayJuiceGrid > .empty-state p');
+  if (emptyJuice) emptyJuice.textContent = T.assignHint;
+  const moodCards = document.querySelectorAll('#panel-heute .grid-2 > .card');
+  if (moodCards[0]) { const ct = moodCards[0].querySelector('.card-title'); if(ct) ct.textContent = T.wellbeing; }
+  document.querySelectorAll('.mood-btn').forEach((btn,i) => { if(T.moodLabels[i+1]) btn.title = T.moodLabels[i+1]; });
+  if (moodCards[1]) { const ct = moodCards[1].querySelector('.card-title'); if(ct) ct.textContent = T.dayNote; }
+  const todayNote = document.getElementById('todayNote');
+  if (todayNote) todayNote.placeholder = T.notePlaceholder;
+  const prepH4 = document.querySelector('#prepTomorrowBox h4');
+  if (prepH4) prepH4.innerHTML = T.prepTitle;
+  // Plan panel
+  const planHead = document.querySelector('#panel-plan > .section-head');
+  if (planHead) {
+    planHead.querySelector('.section-title').innerHTML = T.planTitle;
+    const btns = planHead.querySelectorAll('button');
+    if(btns[0]) btns[0].innerHTML = T.clearPlan;
+    if(btns[1]) btns[1].innerHTML = T.aiPlan;
+  }
+  const planDesc = document.querySelector('#panel-plan > .section-head + p');
+  if (planDesc) planDesc.innerHTML = T.planHint;
+  const aiPlanL = document.getElementById('aiPlanLoading');
+  if (aiPlanL) aiPlanL.innerHTML = '<div class="spinner" style="width:24px;height:24px;margin:0 auto 10px"></div>' + T.aiPlanLoading;
+  // Recipes panel
+  const recHead = document.querySelector('#panel-rezepte > .section-head');
+  if (recHead) {
+    recHead.querySelector('.section-title').innerHTML = T.recipesTitle;
+    const btns = recHead.querySelectorAll('button');
+    if(btns[0]) btns[0].innerHTML = T.importKoch;
+    if(btns[1]) btns[1].innerHTML = T.importUrl;
+    if(btns[2]) btns[2].innerHTML = T.ownSearch;
+    if(btns[3]) btns[3].innerHTML = T.autoSearch;
+  }
+  const ast = document.getElementById('autoSearchText');
+  if (ast) ast.textContent = T.searchingYT;
+  const rs = document.getElementById('recipeSearch');
+  if (rs) rs.placeholder = T.searchPlaceholder;
+  const gc = document.querySelector('.grid-control');
+  if (gc) { const sp = gc.querySelector('span'); if(sp) sp.textContent = T.columns; }
+  // Shopping panel
+  const shopHead = document.querySelector('#panel-einkauf > .section-head');
+  if (shopHead) {
+    shopHead.querySelector('.section-title').innerHTML = T.shopTitle;
+    const btns = shopHead.querySelectorAll('button');
+    if(btns[0]) btns[0].innerHTML = T.copy;
+    if(btns[1]) btns[1].innerHTML = T.reset;
+    if(btns[2]) btns[2].innerHTML = T.fromPlan;
+    if(btns[3]) btns[3].innerHTML = T.aiShop;
+  }
+  const sib = document.getElementById('shopInfoBox');
+  if (sib && !sib._aiOverride) sib.innerHTML = T.shopTip;
+  const aiSL = document.getElementById('aiShopLoading');
+  if (aiSL) aiSL.innerHTML = '<div class="spinner" style="width:24px;height:24px;margin:0 auto 10px"></div>' + T.aiShopLoading;
+  const dayTabs = document.querySelectorAll('#shopDayTabs button');
+  if (dayTabs[0]) dayTabs[0].textContent = T.allDays;
+  for (let i = 1; i <= 4; i++) { if(dayTabs[i]) dayTabs[i].textContent = T.dayX(i); }
+  // Modals
+  const apiM = document.getElementById('apiModal');
+  if (apiM) {
+    apiM.querySelector('.modal-title').innerHTML = T.groqApiTitle;
+    const desc = apiM.querySelector('.modal-title + p'); if(desc) desc.innerHTML = T.groqApiDesc;
+    const apiLbl = apiM.querySelector('.form-label'); if(apiLbl) apiLbl.textContent = T.apiKeyLabel;
+    const btns = apiM.querySelectorAll('.flex-row button');
+    if(btns[0]) btns[0].textContent = T.save; if(btns[1]) btns[1].textContent = T.cancel;
+  }
+  const setupM = document.getElementById('setupModal');
+  if (setupM) {
+    setupM.querySelector('.modal-title').innerHTML = T.setupTitle;
+    const labels = setupM.querySelectorAll('.form-label');
+    if(labels[0]) labels[0].textContent = T.startDate;
+    if(labels[1]) labels[1].textContent = T.numDays;
+    if(labels[2]) labels[2].textContent = T.programName;
+    const selOpts = document.getElementById('setupDays');
+    if(selOpts) selOpts.querySelectorAll('option').forEach(o => o.textContent = T.xDays(parseInt(o.value)));
+    const btns = setupM.querySelectorAll('.flex-row button');
+    if(btns[0]) btns[0].innerHTML = T.saveStart; if(btns[1]) btns[1].innerHTML = T.resetBtnText;
+    const setupNameInput = document.getElementById('setupName');
+    if(setupNameInput) setupNameInput.placeholder = T.setupNamePlaceholder;
+  }
+  const ytM = document.getElementById('ytModal');
+  if (ytM) {
+    ytM.querySelector('.modal-title').innerHTML = T.urlImportTitle;
+    const desc = ytM.querySelector('.modal-title + p'); if(desc) desc.innerHTML = T.urlImportDesc;
+    const lbl = ytM.querySelector('.form-label'); if(lbl) lbl.textContent = T.urlLabel;
+    document.getElementById('ytUrl').placeholder = T.urlPlaceholder;
+    const btns = ytM.querySelectorAll('.flex-row button');
+    if(btns[0]) btns[0].innerHTML = T.importBtn; if(btns[1]) btns[1].textContent = T.cancel;
+  }
+  const aiRM = document.getElementById('aiRecipeModal');
+  if (aiRM) {
+    aiRM.querySelector('.modal-title').innerHTML = T.aiRecipeTitle;
+    const desc = aiRM.querySelector('.modal-title + p'); if(desc) desc.innerHTML = T.aiRecipeDesc;
+    const lbl = aiRM.querySelector('.form-label'); if(lbl) lbl.textContent = T.whatSearch;
+    document.getElementById('aiRecipeInput').placeholder = T.aiRecipePlaceholder;
+    const btns = aiRM.querySelectorAll('.flex-row button');
+    if(btns[0]) btns[0].innerHTML = T.searchImport; if(btns[1]) btns[1].textContent = T.cancel;
+  }
+}
+
+function setLang(newLang) {
+  lang = newLang;
+  T = I18N[lang];
+  localStorage.setItem('detox_lang', lang);
+  translateStaticUI();
+  renderToday();
+  renderPlan();
+  renderRecipes();
+  buildShopList();
+  renderShop();
+}
+
+// ─── Load state ───
+let recipes = JSON.parse(localStorage.getItem(LS.recipes) || '[]');
+
+// ─── Brasilianische Rezepte (einmalig einfügen) ───
+(function initBrazilRecipes() {
+  if (localStorage.getItem('detox_brazil_v3')) return; // Bereits hinzugefügt
+  const br = [
+    {
+      id: 1709900001,
+      brazil: true,
+      kategorie: 'Detox-Suppe',
+      sourceThumb: 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=640&h=427&fit=crop',
+      titel: 'Sopinha – Brasilianische Detox-Suppe',
+      zeitGesamt: '30 Min',
+      portionen: '2-3 Portionen',
+      kalorien: 'ca. 280 kcal',
+      zutaten: [
+        '300g Kürbis (Abóbora), gewürfelt',
+        '1 reife Avocado (Abacate)',
+        '30g Mandeln (Amêndoa)',
+        '3 EL Haferflocken (Aveia)',
+        '1 Stange Lauch (Alho Poró), in Ringe',
+        '1 Bund Petersilie (Salsa), gehackt',
+        '1 Bund Koriander (Coentro), gehackt',
+        '1 TL Currypulver',
+        '1 EL Miso-Paste (Missô)',
+        '1 EL Sojasauce (Shoyu)',
+        '500ml Wasser oder Gemüsebrühe',
+        'Und viel Liebe! ❤️'
+      ],
+      schritte: [
+        'Kürbis und Lauch in einem Topf mit etwas Wasser anschwitzen.',
+        'Wasser/Brühe dazugeben und Kürbis weich kochen (ca. 15 Min).',
+        'Haferflocken und Mandeln dazugeben, 5 Min mitkochen.',
+        'Alles pürieren, Miso-Paste und Sojasauce einrühren.',
+        'Avocado in Würfel schneiden, mit Curry, Petersilie und Koriander garnieren.',
+        'Mit Liebe servieren – Muito amô!!'
+      ]
+    },
+    {
+      id: 1709900002,
+      brazil: true,
+      kategorie: 'Erdsaft',
+      sourceThumb: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=640&h=427&fit=crop',
+      titel: 'Suco Terra – Erdsaft mit Wurzelgemüse',
+      zeitGesamt: '15 Min',
+      portionen: '2 Portionen',
+      kalorien: 'ca. 150 kcal',
+      zutaten: [
+        '2 große Äpfel (Maçã)',
+        '1 Stück Ingwer (Gengibre), ca. 3cm',
+        '1 Chayote (Xuxu/Chuchu), geschält',
+        '1 Süßkartoffel (Batata Doce), mittelgroß',
+        '1 Handvoll Sojasprossen (Moyashi)',
+        '2 Karotten (Cenoura)',
+        '1 Rote Bete (Beterraba), roh',
+        '1 Prise Zimt (Canela)',
+        'Gekeimte Erbsensamen (Semente Ervilha Germinada)'
+      ],
+      schritte: [
+        'Süßkartoffel vorab dämpfen (ca. 10 Min) und abkühlen lassen.',
+        'Alle Zutaten waschen und grob zerkleinern.',
+        'Gemüse (Beterraba, Cenoura, Gengibre) und Äpfel durch den Entsafter geben.',
+        'Süßkartoffel und Chayote im Mixer mit dem Saft pürieren.',
+        'Sojasprossen und Erbsenkeimlinge als Topping.',
+        'Mit Zimt bestreuen – 2 Maçãs pro Person! Muito amô!'
+      ]
+    },
+    {
+      id: 1709900003,
+      brazil: true,
+      kategorie: 'Lebendiger Saft',
+      sourceThumb: 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=640&h=427&fit=crop',
+      titel: 'Suco Vivo – Lebendiger Grüner Saft',
+      zeitGesamt: '10 Min',
+      portionen: '2 Portionen',
+      kalorien: 'ca. 95 kcal',
+      zutaten: [
+        '2 große Äpfel (Maçã)',
+        '3 Blätter Grünkohl (Couve)',
+        '1 Zweig Beifuß (Artemisia)',
+        '1 Handvoll Basilikum (Manjericão)',
+        '2 Zitronenblätter (Folha de Limão)',
+        '1 Handvoll gekeimte Sojasprossen (Moyashi Germinado)',
+        '1 Zweig Koriander (Coentro)',
+        'Einige Blätter Capeba (Piper umbellatum)'
+      ],
+      schritte: [
+        'Alle Kräuter und Blätter waschen.',
+        'Äpfel vierteln (2 große pro Person).',
+        'Grünkohl, Artemisia, Basilikum, Koriander und Capeba-Blätter mit Äpfeln im Entsafter pressen.',
+        'Zitronenblätter kurz mitpressen für das Aroma.',
+        'Gekeimte Moyashi-Sprossen (Grau/Körner) als Topping.',
+        'Sofort trinken – lebendig und frisch!'
+      ]
+    },
+    {
+      id: 1709900004,
+      brazil: true,
+      kategorie: 'Gewürzmilch',
+      sourceThumb: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=640&h=427&fit=crop',
+      titel: 'Leite Dourado – Goldene Gewürz-Kokosmilch',
+      zeitGesamt: '10 Min',
+      portionen: '2 Portionen',
+      kalorien: 'ca. 180 kcal',
+      zutaten: [
+        '400ml Kokosmilch (Leite Côco)',
+        '3 Datteln (Tâmara), entsteint',
+        '1 TL Zimt (Canela)',
+        '1 Stück Ingwer (Gengibre), ca. 2cm gerieben',
+        '1 Sternanis (Anis)',
+        '3 Kardamom-Kapseln (Cardamomo), leicht angedrückt',
+        '3 Nelken (Cravo)'
+      ],
+      schritte: [
+        'Kokosmilch mit Datteln im Mixer pürieren bis cremig.',
+        'In einen Topf gießen. Ingwer, Sternanis, Kardamom und Nelken hinzufügen.',
+        'Auf mittlerer Hitze langsam erwärmen (nicht kochen), 5 Min ziehen lassen.',
+        'Durch ein Sieb in Tassen gießen.',
+        'Mit Zimt bestreuen.',
+        'Lindo dia de amor! ❤️'
+      ]
+    }
+  ];
+  // Alte Versionen entfernen und mit Bildern neu einfügen
+  recipes = recipes.filter(r => ![1709900001,1709900002,1709900003,1709900004].includes(r.id));
+  br.forEach(r => {
+    if (!recipes.some(x => x.id === r.id)) recipes.push(r);
+  });
+  localStorage.setItem(LS.recipes, JSON.stringify(recipes));
+  localStorage.setItem('detox_brazil_v3', '1');
+})();
+let plan = JSON.parse(localStorage.getItem(LS.plan) || '{"day1":[],"day2":[],"day3":[],"day4":[]}');
+// Normalize plan slots to 5
+['day1','day2','day3','day4'].forEach(d => {
+  if (!plan[d]) plan[d] = [];
+  while (plan[d].length < 5) plan[d].push(null);
+  plan[d] = plan[d].slice(0,5);
+});
+let progress = JSON.parse(localStorage.getItem(LS.progress) || '{"startDate":null,"days":4,"checked":{},"mood":{},"notes":{}}');
+let shopChecked = JSON.parse(localStorage.getItem(LS.shop) || '{}');
+let setup = JSON.parse(localStorage.getItem(LS.setup) || JSON.stringify({startDate:null,days:4,name:T.defaultName}));
+let shopView = 'all';
+let currentSlotDay = null;
+let currentSlotIdx = null;
+
+
+// ─── Tab switching ───
+function setTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  document.getElementById('panel-' + tab).classList.add('active');
+  const activeTab = document.getElementById('tab-' + tab);
+  activeTab.classList.add('active');
+  activeTab.setAttribute('aria-selected', 'true');
+  if (tab === 'heute') renderToday();
+  if (tab === 'plan') renderPlan();
+  if (tab === 'rezepte') renderRecipes();
+  if (tab === 'einkauf') { buildShopList(); renderShop(); }
+}
+
+// ─── Persist helpers ───
+function saveRecipes() { localStorage.setItem(LS.recipes, JSON.stringify(recipes)); }
+function savePlan() { localStorage.setItem(LS.plan, JSON.stringify(plan)); }
+function saveProgress() { localStorage.setItem(LS.progress, JSON.stringify(progress)); }
+function saveShop() { localStorage.setItem(LS.shop, JSON.stringify(shopChecked)); }
+function saveSetupData() { localStorage.setItem(LS.setup, JSON.stringify(setup)); }
+
+// ─── Toast ───
+function toast(msg, type = 'info', duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = escapeHtml(msg);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ─── Modal helpers ───
+function openModal(id) { 
+  const modal = document.getElementById(id);
+  modal.classList.add('open'); 
+  // Focus-Management
+  const firstInput = modal.querySelector('input, textarea, button');
+  if (firstInput) setTimeout(() => firstInput.focus(), 100);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ESC-Taste schließt Modals
+document.addEventListener('keydown', (e) => {
+  // ESC closes modals
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+    });
+    return;
+  }
+  
+  // Ignore shortcuts when typing in input fields
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  
+  // Number keys (1-4) switch tabs
+  if (e.key >= '1' && e.key <= '4') {
+    const tabs = ['heute', 'plan', 'rezepte', 'einkauf'];
+    setTab(tabs[parseInt(e.key) - 1]);
+    e.preventDefault();
+    return;
+  }
+  
+  // Ctrl/Cmd + S = Open Settings
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    openDetoxSetup();
+    e.preventDefault();
+    return;
+  }
+});
+
+// ─── API Key ───
+function openApiModal() {
+  const key = localStorage.getItem('groq_api_key') || '';
+  document.getElementById('apiKeyInput').value = key;
+  openModal('apiModal');
+}
+function saveApiKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  // Validierung: Groq API-Keys beginnen mit "gsk_"
+  if (k && !k.startsWith('gsk_')) {
+    toast('Ungültiger API-Key Format. Groq Keys beginnen mit "gsk_"', 'warning');
+    return;
+  }
+  if (k && k.length < 20) {
+    toast('API-Key scheint zu kurz zu sein', 'warning');
+    return;
+  }
+  localStorage.setItem('groq_api_key', k);
+  closeModal('apiModal');
+  toast(k ? T.apiKeySaved : 'API-Key entfernt', k ? 'success' : 'info');
+}
+function getApiKey() { return localStorage.getItem('groq_api_key') || ''; }
+
+// ─── GROQ fetch ───
+async function groqChat(systemPrompt, userPrompt, timeout = 30000) {
+  const key = getApiKey();
+  if (!key) { toast(T.enterApiKey, 'warning'); throw new Error('no key'); }
+  
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    
+    const res = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+        temperature: 0.7, max_tokens: 2000
+      }),
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!res.ok) { 
+      const errorText = await res.text().catch(() => 'Unbekannter API-Fehler');
+      throw new Error(`API-Fehler (${res.status}): ${errorText.slice(0, 200)}`);
+    }
+    
+    const data = await res.json();
+    if (!data?.choices?.[0]?.message?.content) {
+      throw new Error('Ungültige API-Antwort erhalten');
+    }
+    
+    return data.choices[0].message.content;
+  } catch(err) {
+    if (err.name === 'AbortError') {
+      throw new Error('Anfrage zu langsam - Timeout nach ' + (timeout/1000) + 's');
+    }
+    throw err;
+  }
+}
+
+// ─── Setup / progress ───
+function openDetoxSetup() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('setupStartDate').value = setup.startDate || today;
+  document.getElementById('setupDays').value = setup.days || 4;
+  document.getElementById('setupName').value = setup.name || T.defaultName;
+  openModal('setupModal');
+}
+function saveSetup() {
+  const startDate = document.getElementById('setupStartDate').value;
+  const daysInput = document.getElementById('setupDays').value;
+  const name = document.getElementById('setupName').value.trim();
+  
+  // Input-Validierung
+  if (!startDate) {
+    toast('Bitte wähle ein Startdatum', 'warning');
+    return;
+  }
+  
+  const days = parseInt(daysInput);
+  if (isNaN(days) || days < 1 || days > 14) {
+    toast('Ungültige Tagesanzahl (1-14 Tage erlaubt)', 'error');
+    return;
+  }
+  
+  if (!name || name.length < 2) {
+    toast('Bitte gib einen Programm-Namen ein (min. 2 Zeichen)', 'warning');
+    return;
+  }
+  
+  setup.startDate = startDate;
+  setup.days = days;
+  setup.name = name;
+  if (!progress.checked) progress.checked = {};
+  if (!progress.mood) progress.mood = {};
+  if (!progress.notes) progress.notes = {};
+  saveSetupData();
+  saveProgress();
+  closeModal('setupModal');
+  toast(T.detoxStarted + setup.name, 'success');
+  renderToday();
+}
+function resetDetox() {
+  if (!confirm(T.confirmReset)) return;
+  setup = { startDate: null, days: 4, name: T.defaultName };
+  progress = { startDate: null, days: 4, checked: {}, mood: {}, notes: {} };
+  saveSetupData(); saveProgress();
+  closeModal('setupModal');
+  toast(T.detoxReset, 'info');
+  renderToday();
+}
+
+function getCurrentDayIndex() {
+  if (!setup.startDate) return -1;
+  const start = new Date(setup.startDate);
+  start.setHours(0,0,0,0);
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const diff = Math.floor((now - start) / 86400000);
+  if (diff < 0 || diff >= setup.days) return -1;
+  return diff; // 0-based
+}
+
+// ═══════════════════════════════════════════════════════
+//  TAB 1: HEUTE
+// ═══════════════════════════════════════════════════════
+function renderToday() {
+  const dayIdx = getCurrentDayIndex();
+  const dayKey = dayIdx >= 0 ? 'day' + (dayIdx + 1) : null;
+
+  // Stats row
+  const statsRow = document.getElementById('todayStats');
+  const totalDays = setup.days || 4;
+  const completedDays = dayIdx >= 0 ? dayIdx : 0;
+  const totalJuices = totalDays * 5;
+  let doneJuices = 0;
+  for (let d = 1; d <= totalDays; d++) {
+    const dk = 'day' + d;
+    if (progress.checked[dk]) doneJuices += progress.checked[dk].filter(Boolean).length;
+  }
+  
+  // Calculate streak (consecutive days with all juices done)
+  let streak = 0;
+  for (let d = 1; d <= dayIdx; d++) {
+    const dk = 'day' + d;
+    const dayChecks = progress.checked[dk] || [];
+    if (dayChecks.filter(Boolean).length === 5) {
+      streak++;
+    } else {
+      streak = 0; // Reset if a day is incomplete
+    }
+  }
+  
+  statsRow.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${totalDays}</div><div class="stat-label">${T.daysTotal}</div></div>
+    <div class="stat-card"><div class="stat-num">${dayIdx >= 0 ? dayIdx + 1 : '–'}</div><div class="stat-label">${T.currentDay}</div></div>
+    <div class="stat-card"><div class="stat-num">${totalJuices}</div><div class="stat-label">${T.juicesTotal}</div></div>
+    <div class="stat-card"><div class="stat-num">${doneJuices}</div><div class="stat-label">${T.juicesDrunk}</div></div>
+    ${streak > 0 ? `<div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);"><div class="stat-num">🔥 ${streak}</div><div class="stat-label">Streak</div></div>` : ''}
+  `;
+
+  // Nutrition summary for today
+  if (dayIdx >= 0 && dayKey && plan[dayKey]) {
+    const todayRecipes = plan[dayKey].map(rid => recipes.find(r => r.id === rid)).filter(Boolean);
+    const nutrition = {
+      kalorien: 0,
+      protein: 0,
+      kohlenhydrate: 0,
+      fett: 0,
+      ballaststoffe: 0
+    };
+    todayRecipes.forEach(r => {
+      if (r.kalorien) nutrition.kalorien += parseInt(r.kalorien) || 0;
+      if (r.protein) nutrition.protein += parseFloat(r.protein) || 0;
+      if (r.kohlenhydrate) nutrition.kohlenhydrate += parseFloat(r.kohlenhydrate) || 0;
+      if (r.fett) nutrition.fett += parseFloat(r.fett) || 0;
+      if (r.ballaststoffe) nutrition.ballaststoffe += parseFloat(r.ballaststoffe) || 0;
+    });
+    if (nutrition.kalorien > 0 || nutrition.protein > 0) {
+      const nutritionDiv = document.createElement('div');
+      nutritionDiv.className = 'card mb-16';
+      nutritionDiv.style.background = 'linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%)';
+      nutritionDiv.innerHTML = `
+        <div class="card-title">📊 Tages-Nährwerte</div>
+        <div class="nutrition-grid">
+          ${nutrition.kalorien ? `<div class="nutrition-item"><strong>${nutrition.kalorien}</strong> kcal</div>` : ''}
+          ${nutrition.protein ? `<div class="nutrition-item"><strong>${Math.round(nutrition.protein)}g</strong> Protein</div>` : ''}
+          ${nutrition.kohlenhydrate ? `<div class="nutrition-item"><strong>${Math.round(nutrition.kohlenhydrate)}g</strong> Kohlenhydrate</div>` : ''}
+          ${nutrition.fett ? `<div class="nutrition-item"><strong>${Math.round(nutrition.fett)}g</strong> Fett</div>` : ''}
+          ${nutrition.ballaststoffe ? `<div class="nutrition-item"><strong>${Math.round(nutrition.ballaststoffe)}g</strong> Ballaststoffe</div>` : ''}
+        </div>
+      `;
+      document.getElementById('detoxProgressCard').insertAdjacentElement('afterend', nutritionDiv);
+    }
+  }
+
+  // Progress card
+  const noHint = document.getElementById('noDetoxHint');
+  const body = document.getElementById('detoxProgressBody');
+  if (!setup.startDate) {
+    noHint.style.display = ''; body.style.display = 'none';
+  } else {
+    noHint.style.display = 'none'; body.style.display = '';
+    const pct = dayIdx >= 0 ? Math.round(((dayIdx + 1) / totalDays) * 100) : 0;
+    document.getElementById('progressLabel').textContent = setup.name + (dayIdx >= 0 ? ' – ' + T.dayXofY(dayIdx+1, totalDays) : ' – ' + T.completed);
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  // Juice grid
+  const grid = document.getElementById('todayJuiceGrid');
+  if (dayIdx < 0 || !dayKey) {
+    const doneTxt = setup.startDate && dayIdx < 0 && new Date(setup.startDate) < new Date() ? T.detoxDone : T.detoxNotStarted;
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🥤</div><p>${doneTxt}</p></div>`;
+  } else {
+    const slots = plan[dayKey] || [null,null,null,null,null];
+    if (!progress.checked[dayKey]) progress.checked[dayKey] = [false,false,false,false,false];
+    grid.innerHTML = '';
+    let anyAssigned = false;
+    slots.forEach((rid, i) => {
+      const rec = rid !== null ? recipes.find(r => r.id === rid) : null;
+      const checked = progress.checked[dayKey][i] || false;
+      if (rec) anyAssigned = true;
+      const card = document.createElement('div');
+      card.className = 'juice-card' + (checked ? ' done' : '');
+      card.innerHTML = `
+        <div>
+          <div class="juice-time">${TIMES[i]}</div>
+          <div class="juice-name">${rec ? rec.titel : '<span class="slot-empty">' + T.noRecipeAssigned + '</span>'}</div>
+          ${rec ? `<div class="juice-ingr">${(rec.zutaten||[]).slice(0,3).join(' · ')}</div>` : ''}
+          ${rec && rec.kalorien ? `<div class="juice-kcal">~${tMeta(rec.kalorien)}</div>` : ''}
+        </div>
+        <button class="check-btn ${checked ? 'checked' : ''}" 
+                onclick="toggleJuiceCheck('${dayKey}',${i})" 
+                aria-label="${rec ? rec.titel : 'Saft'} als getrunken markieren"
+                aria-pressed="${checked}">
+          ${checked ? '✓' : ''}
+        </button>
+      `;
+      grid.appendChild(card);
+    });
+    if (!anyAssigned) {
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>${T.assignDayHint(dayIdx+1)}</p></div>`;
+    }
+  }
+
+  // Mood
+  const savedMood = dayKey ? (progress.mood[dayKey] || 0) : 0;
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.mood) === savedMood);
+  });
+  document.getElementById('moodNote').textContent = savedMood ? (T.moodToday + T.moodLabels[savedMood]) : '';
+
+  // Notes
+  const savedNote = dayKey ? (progress.notes[dayKey] || '') : '';
+  document.getElementById('todayNote').value = savedNote;
+
+  // Prep for tomorrow
+  const tomorrowIdx = dayIdx + 1;
+  const tomorrowKey = 'day' + (tomorrowIdx + 1);
+  const prepBox = document.getElementById('prepTomorrowBox');
+  const prepList = document.getElementById('prepTomorrowList');
+  if (tomorrowIdx < totalDays && plan[tomorrowKey]) {
+    const tSlots = plan[tomorrowKey].filter(r => r !== null);
+    const tRecipes = tSlots.map(id => recipes.find(r => r.id === id)).filter(Boolean);
+    if (tRecipes.length > 0) {
+      const allIngr = [];
+      tRecipes.forEach(r => (r.zutaten || []).forEach(z => { if (!allIngr.includes(z)) allIngr.push(z); }));
+      prepList.innerHTML = allIngr.slice(0, 12).map(z => `<li>${z}</li>`).join('');
+      prepBox.style.display = '';
+    } else prepBox.style.display = 'none';
+  } else prepBox.style.display = 'none';
+}
+
+let lastJuiceToggle = null;
+
+function toggleJuiceCheck(dayKey, idx) {
+  if (!progress.checked[dayKey]) progress.checked[dayKey] = [false,false,false,false,false];
+  const previousState = progress.checked[dayKey][idx];
+  progress.checked[dayKey][idx] = !progress.checked[dayKey][idx];
+  const newState = progress.checked[dayKey][idx];
+  
+  // Store for undo
+  lastJuiceToggle = { dayKey, idx, previousState };
+  
+  saveProgress();
+  renderToday();
+  
+  // Show undo toast
+  const undoBtn = `<button onclick="undoJuiceCheck()" style="background:#fff;color:var(--accent);padding:6px 12px;border-radius:8px;border:none;cursor:pointer;margin-left:12px;font-weight:700;">↶ Rückgängig</button>`;
+  toast((newState ? '✓ Abgehakt' : '○ Rückgängig gemacht') + undoBtn, 'success', 5000);
+}
+
+function undoJuiceCheck() {
+  if (!lastJuiceToggle) return;
+  const { dayKey, idx, previousState } = lastJuiceToggle;
+  if (!progress.checked[dayKey]) progress.checked[dayKey] = [false,false,false,false,false];
+  progress.checked[dayKey][idx] = previousState;
+  lastJuiceToggle = null;
+  saveProgress();
+  renderToday();
+  toast('↶ Rückgängig gemacht', 'info');
+}
+
+function checkAllToday() {
+  const dayIdx = getCurrentDayIndex();
+  if (dayIdx < 0) return;
+  const dk = 'day' + (dayIdx + 1);
+  progress.checked[dk] = [true,true,true,true,true];
+  saveProgress();
+  renderToday();
+  toast(T.allChecked, 'success');
+}
+
+function setMood(val) {
+  const dayIdx = getCurrentDayIndex();
+  if (dayIdx < 0) { toast(T.detoxNotStartedToast, 'warning'); return; }
+  const dk = 'day' + (dayIdx + 1);
+  progress.mood[dk] = val;
+  saveProgress();
+  renderToday();
+}
+
+function saveTodayNote() {
+  const dayIdx = getCurrentDayIndex();
+  if (dayIdx < 0) return;
+  const dk = 'day' + (dayIdx + 1);
+  progress.notes[dk] = document.getElementById('todayNote').value;
+  saveProgress();
+}
+
+// ═══════════════════════════════════════════════════════
+//  TAB 2: 4-TAGE-PLAN
+// ═══════════════════════════════════════════════════════
+function renderPlan() {
+  const grid = document.getElementById('planGrid');
+  const dayIdx = getCurrentDayIndex();
+  const totalDays = setup.days || 4;
+  grid.innerHTML = '';
+
+  for (let d = 1; d <= totalDays; d++) {
+    const dk = 'day' + d;
+    const isToday = (dayIdx === d - 1);
+    const col = document.createElement('div');
+    col.className = 'day-col' + (isToday ? ' today-col' : '');
+    const slots = plan[dk] || [null,null,null,null,null];
+    const filled = slots.filter(s => s !== null).length;
+    col.innerHTML = `
+      <div class="day-col-head">
+        <span>${T.dayX(d)}</span>
+        ${isToday ? '<span class="day-badge">' + T.today + '</span>' : `<span style="font-size:0.75rem;color:var(--text3);font-weight:400">${filled}/5</span>`}
+      </div>
+      ${TIMES.map((t, i) => {
+        const rid = slots[i];
+        const rec = rid !== null ? recipes.find(r => r.id === rid) : null;
+        return `<div class="slot-item" onclick="openSlotPicker('${dk}',${i})">
+          <span class="slot-num">${i+1}</span>
+          <span style="flex:1">${rec ? rec.titel : '<span class="slot-empty">' + T.addSlot + '</span>'}</span>
+          ${rec ? `<button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem" onclick="event.stopPropagation();removeSlot('${dk}',${i})">✕</button>` : ''}
+        </div>`;
+      }).join('')}
+    `;
+    grid.appendChild(col);
+  }
+}
+
+function openSlotPicker(dayKey, slotIdx) {
+  currentSlotDay = dayKey;
+  currentSlotIdx = slotIdx;
+  const modal = document.getElementById('slotModal');
+  const title = document.getElementById('slotModalTitle');
+  const list = document.getElementById('slotRecipeList');
+  const dayNum = dayKey.replace('day','');
+  title.textContent = T.slotTitle(dayNum, slotIdx+1, TIMES[slotIdx]);
+  if (recipes.length === 0) {
+    list.innerHTML = `<div class="empty-state" style="padding:24px"><div class="empty-icon">🥤</div><p>${T.noRecipesSlot}</p></div>`;
+  } else {
+    list.innerHTML = recipes.map(r => `
+      <div class="slot-item" onclick="assignSlot(${r.id})" style="cursor:pointer;border-radius:var(--radius-sm);margin-bottom:6px">
+        <span style="flex:1">
+          <div style="font-weight:600;font-size:0.9rem">${r.titel}</div>
+          <div style="font-size:0.75rem;color:var(--text3)">${(r.zutaten||[]).slice(0,3).join(' · ')}</div>
+        </span>
+        ${r.kalorien ? `<span style="font-size:0.75rem;color:var(--accent)">${tMeta(r.kalorien)}</span>` : ''}
+      </div>
+    `).join('');
+  }
+  openModal('slotModal');
+}
+
+function assignSlot(recipeId) {
+  if (!plan[currentSlotDay]) plan[currentSlotDay] = [null,null,null,null,null];
+  plan[currentSlotDay][currentSlotIdx] = recipeId;
+  savePlan();
+  closeModal('slotModal');
+  renderPlan();
+  buildShopList();
+  toast(T.recipeAssigned, 'success');
+}
+
+function removeSlot(dayKey, slotIdx) {
+  plan[dayKey][slotIdx] = null;
+  savePlan();
+  renderPlan();
+  buildShopList();
+}
+
+function clearPlan() {
+  if (!confirm(T.confirmClearPlan)) return;
+  plan = { day1:[null,null,null,null,null], day2:[null,null,null,null,null], day3:[null,null,null,null,null], day4:[null,null,null,null,null] };
+  savePlan();
+  renderPlan();
+  toast(T.planCleared, 'info');
+}
+
+async function aiGeneratePlan() {
+  const key = getApiKey();
+  if (!key) { 
+    toast('Bitte zuerst einen API-Key eingeben', 'warning');
+    setTimeout(() => openApiModal(), 500);
+    return; 
+  }
+  if (recipes.length === 0) { toast(T.addRecipesFirst, 'warning'); return; }
+  document.getElementById('aiPlanLoading').style.display = '';
+  document.getElementById('aiPlanBtn').disabled = true;
+  try {
+    const recipeList = recipes.map(r => `ID:${r.id} "${r.titel}" (${(r.zutaten||[]).slice(0,3).join(', ')})`).join('\n');
+    const totalDays = setup.days || 4;
+    const sys = `Du bist ein Detox-Ernährungsexperte. Erstelle einen abwechslungsreichen ${totalDays}-Tage-Saft-Detox-Plan. Antworte NUR mit validen JSON.`;
+    const user = `Verfügbare Rezepte:\n${recipeList}\n\nErstelle einen ${totalDays}-Tage-Plan mit je 5 Säften pro Tag. Nutze die IDs der verfügbaren Rezepte. Verteile abwechslungsreich.\n\nAntworte mit diesem Format:\n{"day1":[id,id,id,id,id],"day2":[...],"day3":[...],"day4":[...]}`;
+    const raw = await groqChat(sys, user);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Kein JSON gefunden');
+    const parsed = JSON.parse(jsonMatch[0]);
+    ['day1','day2','day3','day4'].forEach(dk => {
+      if (parsed[dk] && Array.isArray(parsed[dk])) {
+        plan[dk] = parsed[dk].slice(0,5);
+        while (plan[dk].length < 5) plan[dk].push(null);
+      }
+    });
+    savePlan();
+    renderPlan();
+    buildShopList();
+    toast(T.aiPlanDone, 'success');
+  } catch(e) {
+    console.error(e);
+    toast(T.error + e.message, 'error');
+  } finally {
+    document.getElementById('aiPlanLoading').style.display = 'none';
+    document.getElementById('aiPlanBtn').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TAB 3: REZEPTE
+// ═══════════════════════════════════════════════════════
+function setGridCols(n) {
+  n = Math.max(3, Math.min(6, parseInt(n) || 4));
+  document.getElementById('recipeGrid').style.setProperty('--grid-cols', n);
+  document.getElementById('gridColsLabel').textContent = n;
+  document.getElementById('gridColsSlider').value = n;
+  localStorage.setItem('detox_grid_cols', n);
+}
+// Init grid cols from localStorage
+(function() {
+  const saved = parseInt(localStorage.getItem('detox_grid_cols')) || 4;
+  document.addEventListener('DOMContentLoaded', () => setGridCols(saved));
+})();
+
+function renderRecipes() {
+  // Helper: Zutat zu String (kann Objekt oder String sein)
+  const zutatStr = z => typeof z === 'string' ? z : (z && typeof z === 'object') ? [z.amount, z.unit, z.name, z.usageInfo].filter(Boolean).join(' ').trim() || JSON.stringify(z) : String(z);
+
+  const q = (document.getElementById('recipeSearch').value || '').toLowerCase();
+  const grid = document.getElementById('recipeGrid');
+  let list = recipes;
+  if (q) list = recipes.filter(r => r.titel.toLowerCase().includes(q) || (r.zutaten||[]).some(z => zutatStr(z).toLowerCase().includes(q)));
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🥤</div><p>${T.noRecipes}</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(r => `
+    <div class="recipe-card">
+      ${r.youtubeId
+        ? `<img class="recipe-card-thumb" src="https://img.youtube.com/vi/${r.youtubeId}/mqdefault.jpg" alt="${r.titel}" loading="lazy" onerror="this.style.display='none'">`
+        : r.sourceThumb
+          ? `<img class="recipe-card-thumb" src="${r.sourceThumb}" alt="${r.titel}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display=''">
+             <div class="recipe-card-thumb-placeholder" style="display:none">🥤</div>`
+          : r.sourceUrl
+            ? `<div class="recipe-card-thumb-placeholder" style="flex-direction:column;gap:4px"><span style="font-size:2rem">🔗</span><span style="font-size:0.7rem;color:var(--text3);max-width:150px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(() => { try { return new URL(r.sourceUrl).hostname.replace('www.',''); } catch(e){ return ''; } })()}</span></div>`
+            : `<div class="recipe-card-thumb-placeholder">🥤</div>`
+      }
+      <div class="recipe-card-body">
+        <button class="btn-delete" onclick="deleteRecipe(${r.id})" title="${T.deleteTitle}">✕</button>
+        <div class="recipe-tag">🥤 ${tCat(r.kategorie)}${r.brazil ? ' <span class="badge-brazil">🇧🇷 Brazil</span>' : ''}</div>
+        <div class="recipe-title">${r.titel}</div>
+        <div class="recipe-meta">
+          ${r.kalorien ? `<span>🔥 ${tMeta(r.kalorien)}</span>` : ''}
+          ${r.zeitGesamt ? `<span>⏱ ${tMeta(r.zeitGesamt)}</span>` : ''}
+          ${r.youtubeId ? `<span>▶ YouTube</span>` : ''}
+        </div>
+        <div class="recipe-ingr-preview">${(r.zutaten||[]).slice(0,4).map(z => typeof z === 'string' ? z : [z.amount,z.unit,z.name].filter(Boolean).join(' ')).join(' · ')}${(r.zutaten||[]).length > 4 ? ' …' : ''}</div>
+        <div class="recipe-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openRecipeDetail(${r.id})">${T.details}</button>
+          ${r.youtubeId ? `<a href="https://youtube.com/watch?v=${r.youtubeId}" target="_blank" class="btn btn-secondary btn-sm">${T.video}</a>` : ''}
+          ${r.sourceUrl ? `<a href="${r.sourceUrl}" target="_blank" class="btn btn-secondary btn-sm">${T.website}</a>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openRecipeDetail(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  const content = document.getElementById('recipeDetailContent');
+  
+  // Store recipe ID for portions calculator
+  content.dataset.recipeId = id;
+  content.dataset.portions = '1';
+  
+  renderRecipeDetail(r, 1);
+  openModal('recipeDetailModal');
+}
+
+function renderRecipeDetail(r, portionMultiplier = 1) {
+  const content = document.getElementById('recipeDetailContent');
+  const scaleIngredient = (ing) => {
+    if (typeof ing === 'string') {
+      // Try to extract number and multiply
+      const match = ing.match(/^(\d+(?:[.,]\d+)?)\s*(.*)$/);
+      if (match) {
+        const num = parseFloat(match[1].replace(',', '.')) * portionMultiplier;
+        return num.toString().replace('.', ',') + ' ' + match[2];
+      }
+      return ing;
+    }
+    if (ing.amount) {
+      const scaled = {...ing};
+      scaled.amount = (parseFloat(ing.amount) * portionMultiplier).toString().replace('.', ',');
+      return [scaled.amount, scaled.unit, scaled.name, scaled.usageInfo].filter(Boolean).join(' ');
+    }
+    return typeof ing === 'object' ? JSON.stringify(ing) : String(ing);
+  };
+  
+  content.innerHTML = `
+    <div class="modal-title">${r.titel}</div>
+    <div class="recipe-meta flex-row mb-16">
+      ${r.kalorien ? `<span class="pill">🔥 ${Math.round(parseInt(r.kalorien) * portionMultiplier)} kcal</span>` : ''}
+      ${r.zeitGesamt ? `<span class="pill">⏱ ${tMeta(r.zeitGesamt)}</span>` : ''}
+      ${r.portionen ? `<span class="pill">🥤 ${tMeta(r.portionen)}</span>` : ''}
+    </div>
+    
+    <div class="card mb-16" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+      <div class="card-title">🔢 Portionsrechner</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+        <button class="btn btn-secondary btn-sm" onclick="adjustPortions(-0.5)">−</button>
+        <span style="font-size:1.3rem;font-weight:700;color:var(--text);min-width:60px;text-align:center">×${portionMultiplier}</span>
+        <button class="btn btn-secondary btn-sm" onclick="adjustPortions(0.5)">+</button>
+        <button class="btn btn-secondary btn-sm" onclick="adjustPortions('reset')">Reset</button>
+      </div>
+    </div>
+    
+    ${(r.kalorien || r.protein || r.fett || r.kohlenhydrate || r.ballaststoffe) ? `
+      <div class="card mb-16" style="background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);">
+        <div class="card-title">📊 Nährwerte pro Portion</div>
+        <div class="nutrition-grid">
+          ${r.kalorien ? `<div class="nutrition-item"><strong>${Math.round(parseInt(r.kalorien) * portionMultiplier)}</strong> kcal</div>` : ''}
+          ${r.protein ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.protein) * portionMultiplier)}g</strong> Protein</div>` : ''}
+          ${r.kohlenhydrate ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.kohlenhydrate) * portionMultiplier)}g</strong> Kohlenhydrate</div>` : ''}
+          ${r.fett ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.fett) * portionMultiplier)}g</strong> Fett</div>` : ''}
+          ${r.ballaststoffe ? `<div class="nutrition-item"><strong>${Math.round(parseFloat(r.ballaststoffe) * portionMultiplier)}g</strong> Ballaststoffe</div>` : ''}
+        </div>
+      </div>
+    ` : ''}
+    <div class="card-title">${T.ingredients}</div>
+    <ul style="list-style:none;margin-bottom:16px">
+      ${(r.zutaten||[]).map(z => `<li style="padding:5px 0;border-bottom:1px solid var(--border);font-size:0.88rem">◆ ${scaleIngredient(z)}</li>`).join('')}
+    </ul>
+    <div class="card-title">${T.preparation}</div>
+    <ol class="recipe-steps">
+      ${(r.schritte||[]).map(s => `<li>${s}</li>`).join('')}
+    </ol>
+    ${r.youtubeId ? `<a href="https://youtube.com/watch?v=${r.youtubeId}" target="_blank" class="btn btn-secondary btn-sm mt-16">${T.watchVideo}</a>` : ''}
+  `;
+}
+
+function adjustPortions(change) {
+  const content = document.getElementById('recipeDetailContent');
+  const recipeId = parseInt(content.dataset.recipeId);
+  const r = recipes.find(x => x.id === recipeId);
+  if (!r) return;
+  
+  let currentPortions = parseFloat(content.dataset.portions) || 1;
+  
+  if (change === 'reset') {
+    currentPortions = 1;
+  } else {
+    currentPortions = Math.max(0.5, currentPortions + change);
+  }
+  
+  content.dataset.portions = currentPortions;
+  renderRecipeDetail(r, currentPortions);
+}
+
+function deleteRecipe(id) {
+  if (!confirm(T.confirmDeleteRecipe)) return;
+  recipes = recipes.filter(r => r.id !== id);
+  saveRecipes();
+  // Remove from plan too
+  ['day1','day2','day3','day4'].forEach(dk => {
+    plan[dk] = plan[dk].map(rid => rid === id ? null : rid);
+  });
+  savePlan();
+  renderRecipes();
+  buildShopList();
+  toast(T.recipeDeleted, 'info');
+}
+
+// ─── Quick Add Recipe ───
+function openQuickAddModal() {
+  document.getElementById('quickAddName').value = '';
+  document.getElementById('quickAddIngredients').value = '';
+  openModal('quickAddModal');
+  setTimeout(() => document.getElementById('quickAddName').focus(), 100);
+}
+
+function saveQuickAdd() {
+  const name = document.getElementById('quickAddName').value.trim();
+  const ingredients = document.getElementById('quickAddIngredients').value.trim();
+  
+  if (!name) {
+    toast('Bitte einen Namen eingeben', 'warning');
+    return;
+  }
+  
+  const zutaten = ingredients ? ingredients.split('\n').map(line => line.trim()).filter(Boolean) : [];
+  
+  const newRecipe = {
+    id: Date.now(),
+    titel: name,
+    zutaten: zutaten,
+    schritte: ['Alle Zutaten waschen', 'In den Entsafter geben', 'Frisch genießen'],
+    kategorie: 'saft',
+    portionen: '1 Portion',
+    zeitGesamt: '10 Min'
+  };
+  
+  recipes.push(newRecipe);
+  saveRecipes();
+  closeModal('quickAddModal');
+  setTab('rezepte');
+  toast('✅ Rezept "' + name + '" hinzugefügt!', 'success');
+}
+
+// ─── Import from Koch-App ───
+function importFromKochApp() {
+  const raw = localStorage.getItem('borazius_kochapp_v1');
+  if (!raw) {
+    toast(T.noKochData, 'warning');
+    return;
+  }
+  let kochRecipes;
+  try { kochRecipes = JSON.parse(raw); } catch(e) { toast(T.kochReadError, 'error'); return; }
+
+  // Filter: Kategorie "Detox", "Getränk" oder Tag "Detox" – case-insensitive
+  const DETOX_KEYWORDS = ['detox', 'getränk', 'saft', 'smoothie', 'juice'];
+  const matching = kochRecipes.filter(r => {
+    const cats = (r.kategorien || []).map(c => c.toLowerCase());
+    const tags = (r.tags || []).map(t => t.toLowerCase());
+    const title = (r.titel || '').toLowerCase();
+    return DETOX_KEYWORDS.some(kw =>
+      cats.some(c => c.includes(kw)) ||
+      tags.some(t => t.includes(kw)) ||
+      title.includes(kw)
+    );
+  });
+
+  if (matching.length === 0) {
+    toast(T.noMatchingRecipes, 'info');
+    return;
+  }
+
+  // Avoid duplicates by youtubeId or title
+  const existingIds = new Set(recipes.map(r => r.youtubeId).filter(Boolean));
+  const existingTitles = new Set(recipes.map(r => r.titel.toLowerCase()));
+  let imported = 0;
+  matching.forEach(r => {
+    if (r.youtubeId && existingIds.has(r.youtubeId)) return;
+    if (existingTitles.has((r.titel||'').toLowerCase())) return;
+    // Map Koch-App fields → Detox-App format
+    const mapped = {
+      id: Date.now() + Math.random(),
+      titel: r.titel || 'Unbekannt',
+      youtubeId: r.youtubeId || null,
+      zeitGesamt: r.zeitGesamt || '',
+      portionen: r.portionen || '',
+      kalorien: r.kalorien || '',
+      zutaten: r.zutaten || [],
+      schritte: r.schritte || [],
+    };
+    recipes.push(mapped);
+    existingTitles.add(mapped.titel.toLowerCase());
+    if (mapped.youtubeId) existingIds.add(mapped.youtubeId);
+    imported++;
+  });
+
+  if (imported === 0) {
+    toast(T.alreadyImported, 'info');
+    return;
+  }
+  saveRecipes();
+  renderRecipes();
+  toast(T.importedX(imported), 'success');
+}
+
+// ─── URL Import (YouTube + beliebige Websites) ───
+function openYtModal() {
+  document.getElementById('ytUrl').value = '';
+  document.getElementById('ytLoading').style.display = 'none';
+  openModal('ytModal');
+}
+
+// ─── CORS-Proxy Helper (mehrere Proxys als Fallback) ───
+async function proxyFetch(targetUrl) {
+  const proxies = [
+    u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+    u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+  ];
+  for (const mkUrl of proxies) {
+    try {
+      const res = await fetch(mkUrl(targetUrl));
+      const txt = await res.text();
+      if (txt.length > 200 && txt.includes('<')) return txt;
+    } catch(e) { console.warn('Proxy fehlgeschlagen:', e.message); }
+  }
+  return '';
+}
+
+async function importYoutube() {
+  const url = document.getElementById('ytUrl').value.trim();
+  if (!url) { toast(T.enterUrl, 'warning'); return; }
+  const loading = document.getElementById('ytLoading');
+  const loadingText = document.getElementById('ytLoadingText');
+  loading.style.display = '';
+  try {
+    const isYoutube = /youtube\.com|youtu\.be/.test(url);
+    const youtubeMatch = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    let videoId = isYoutube && youtubeMatch ? youtubeMatch[1] : null;
+    let title = '';
+    let content = '';
+    let sourceThumb = null;
+
+    loadingText.textContent = isYoutube ? T.loadingYT : T.loadingWeb;
+    try {
+      const fetchUrl = isYoutube && videoId
+        ? `https://www.youtube.com/watch?v=${videoId}`
+        : url;
+      const html = await proxyFetch(fetchUrl);
+      if (!html) throw new Error('Seite konnte nicht geladen werden');
+
+      if (isYoutube && videoId) {
+        // YouTube: Titel + Beschreibung
+        const tm = html.match(/"title":"([^"]+)"/);
+        if (tm) title = tm[1].replace(/\\u0026/g,'&').replace(/\\n/g,' ');
+        const dm = html.match(/"shortDescription":"([\s\S]{0,2000})"/);
+        if (dm) content = dm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"');
+      } else {
+        // Beliebige Website: sauberen Text extrahieren
+        // Titel aus <title> oder <h1>
+        const titleM = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        if (titleM) title = titleM[1].replace(/\s+/g,' ').trim();
+        const h1M = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+        if (h1M && !title) title = h1M[1].replace(/<[^>]+>/g,'').trim();
+        // og:image direkt im gesamten HTML suchen
+        const ogMatch = html.match(/property\s*=\s*["']og:image["'][^>]*content\s*=\s*["']([^"']+)["']/i)
+                      || html.match(/content\s*=\s*["']([^"']+)["'][^>]*property\s*=\s*["']og:image["']/i)
+                      || html.match(/name\s*=\s*["']twitter:image["'][^>]*content\s*=\s*["']([^"']+)["']/i)
+                      || html.match(/content\s*=\s*["']([^"']+)["'][^>]*name\s*=\s*["']twitter:image["']/i);
+        if (ogMatch) sourceThumb = (ogMatch[1] || '').replace(/&amp;/g,'&');
+        console.log('[Detox] og:image Suche:', sourceThumb);
+        // Fallback: previewImageUrlTemplate aus JSON-LD / Nuxt-Data
+        if (!sourceThumb) {
+          const jsonImg = html.match(/"image"\s*:\s*"(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp))"/i)
+                       || html.match(/previewImageUrlTemplate"\s*:\s*"(https?:\/\/[^"]+)"/i);
+          if (jsonImg) {
+            sourceThumb = jsonImg[1].replace(/\\u003C/g,'<').replace(/<format>/gi,'crop-640x427').replace(/&amp;/g,'&');
+            console.log('[Detox] JSON-Bild gefunden:', sourceThumb);
+          }
+        }
+        // Fallback: erstes großes Bild im HTML
+        if (!sourceThumb) {
+          const imgMatch = html.match(/<img[^>]+src\s*=\s*["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp)[^"']*)["']/i);
+          if (imgMatch && !/icon|logo|avatar|pixel|badge|tracking|spacer|1x1/i.test(imgMatch[1])) {
+            sourceThumb = imgMatch[1].replace(/&amp;/g,'&');
+            console.log('[Detox] Fallback img gefunden:', sourceThumb);
+          }
+        }
+        // Relative URLs auflösen
+        if (sourceThumb && !/^https?:\/\//i.test(sourceThumb)) {
+          try { sourceThumb = new URL(sourceThumb, new URL(url).origin).href; } catch(e) {}
+        }
+        // Text: alle Tags entfernen, Whitespace normalisieren, max 3000 Zeichen
+        content = html
+          .replace(/<script[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+          .replace(/\s{2,}/g, ' ')
+          .trim()
+          .slice(0, 3000);
+      }
+    } catch(e) { console.warn('Fetch fehlgeschlagen:', e.message); }
+
+    loadingText.textContent = T.aiExtracting;
+    const sys = 'Du bist ein Ernährungsexperte für Detox-Säfte. Antworte NUR mit validem JSON, ohne Erklärungen.';
+    const user = `Extrahiere ein Detox-Saft-Rezept aus diesem Inhalt der Seite "${title || url}".\n\nSeiteninhalt:\n${content.slice(0,2500)}\n\nFalls kein konkretes Rezept gefunden: erstelle ein passendes Rezept basierend auf dem Thema.\n\nFormat:\n{"titel":"...","zeitGesamt":"X Min","portionen":"1-2 Portionen","kalorien":"ca. X kcal","zutaten":["Menge Zutat",...],"schritte":["Schritt",...]}`;
+    const raw = await groqChat(sys, user);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Kein JSON von KI erhalten');
+    const parsed = JSON.parse(jsonMatch[0]);
+    // Zutaten normalisieren: immer Strings
+    if (parsed.zutaten && Array.isArray(parsed.zutaten)) {
+      parsed.zutaten = parsed.zutaten.map(z => typeof z === 'string' ? z : [z.amount,z.unit,z.name,z.usageInfo].filter(Boolean).join(' ').trim() || JSON.stringify(z));
+    }
+    const newRec = { ...parsed, id: Date.now(), youtubeId: videoId || null, sourceUrl: !videoId ? url : null, sourceThumb: sourceThumb || null };
+    recipes.push(newRec);
+    saveRecipes();
+    closeModal('ytModal');
+    setTab('rezepte');
+    toast(T.recipeImported + newRec.titel, 'success');
+  } catch(e) {
+    console.error(e);
+    toast(T.error + e.message, 'error');
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+// ─── AI Recipe (YouTube Search) ───
+function openAiRecipeModal() {
+  document.getElementById('aiRecipeInput').value = '';
+  document.getElementById('aiRecipeLoading').style.display = 'none';
+  openModal('aiRecipeModal');
+}
+
+// ─── Auto-Search: sucht automatisch ein zufälliges Detox-Rezept auf YouTube ───
+const AUTO_QUERIES = [
+  'Ingwer Zitrone Detox Saft', 'Grüner Smoothie Detox', 'Sellerie Saft Kur',
+  'Gurke Minze Entgiftungssaft', 'Rote Bete Apfel Detox', 'Ananas Ingwer Detox',
+  'Grünkohl Petersilie Saft', 'Karotten Ingwer Kurkuma Saft', 'Apfel Gurke Spinat Saft',
+  'Zitronenwasser Detox Morgen', 'Wassermelone Minze Saft', 'Mango Ingwer Detox Shot'
+];
+
+async function autoSearchRecipe() {
+  const key = getApiKey();
+  if (!key) { openApiModal(); return; }
+  const statusBox = document.getElementById('autoSearchStatus');
+  const statusText = document.getElementById('autoSearchText');
+  const btn = document.getElementById('autoSearchBtn');
+  statusBox.style.display = '';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Suche...';
+  try {
+    const query = AUTO_QUERIES[Math.floor(Math.random() * AUTO_QUERIES.length)];
+    statusText.textContent = T.searchingX(query);
+
+    // 1. YouTube Suche
+    const searchUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query + ' rezept');
+    let videoId = null, title = query, description = '';
+    try {
+      const html = await proxyFetch(searchUrl);
+      const idMatch = html.match(/"videoId":"([A-Za-z0-9_-]{11})"/);
+      if (idMatch) videoId = idMatch[1];
+      const titleMatch = html.match(/"title":\{"runs":\[\{"text":"([^"]+)"/);
+      if (titleMatch) title = titleMatch[1];
+    } catch(e) { console.warn('YouTube-Suche fehlgeschlagen'); }
+
+    // 2. Video-Details laden
+    if (videoId) {
+      statusText.textContent = T.videoFound;
+      try {
+        const vHtml = await proxyFetch('https://www.youtube.com/watch?v=' + videoId);
+        const dM = vHtml.match(/"shortDescription":"([\s\S]{0,1500})"/);
+        if (dM) description = dM[1].replace(/\\n/g,'\n').replace(/\\"/g,'"');
+        const tM = vHtml.match(/"title":"([^"]+)"/);
+        if (tM) title = tM[1].replace(/\\u0026/g,'&').replace(/\\n/g,' ');
+      } catch(e) { console.warn('Video-Details fehlgeschlagen'); }
+    }
+
+    // 3. Groq extrahiert Rezept
+    statusText.textContent = T.aiCreating;
+    const sys = 'Du bist ein Detox-Ernährungsexperte. Antworte NUR mit validem JSON, ohne Erklärungen.';
+    const user = `Erstelle ein Detox-Saft-Rezept für "${title}"${description ? ' basierend auf:\n' + description.slice(0,800) : ''}.\n\nFormat:\n{"titel":"...","zeitGesamt":"X Min","portionen":"1-2 Portionen","kalorien":"ca. X kcal","zutaten":["Menge Zutat",...],"schritte":["Schritt",...]}`;
+    const raw = await groqChat(sys, user);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Kein JSON von KI');
+    const parsed = JSON.parse(jsonMatch[0]);
+    const newRec = { id: Date.now(), youtubeId: videoId || null, ...parsed };
+    recipes.push(newRec);
+    saveRecipes();
+    renderRecipes();
+    toast(T.newRecipe + newRec.titel, 'success');
+  } catch(e) {
+    console.error(e);
+    toast(T.autoSearchFailed + e.message, 'error');
+  } finally {
+    statusBox.style.display = 'none';
+    btn.disabled = false;
+    btn.innerHTML = T.autoSearch;
+  }
+}
+
+async function aiGenerateRecipe() {
+  const input = document.getElementById('aiRecipeInput').value.trim();
+  if (!input) { toast(T.enterSearch, 'warning'); return; }
+  const loading = document.getElementById('aiRecipeLoading');
+  const loadingText = document.getElementById('aiRecipeLoadingText');
+  loading.style.display = '';
+  try {
+    // 1. YouTube suchen
+    loadingText.textContent = T.searchingVideo;
+    const searchQuery = encodeURIComponent(input + ' detox saft rezept');
+    const searchUrl = 'https://www.youtube.com/results?search_query=' + searchQuery;
+    let videoId = null;
+    let title = input;
+    let description = '';
+    try {
+      const html = await proxyFetch(searchUrl);
+      const idMatch = html.match(/"videoId":"([A-Za-z0-9_-]{11})"/);
+      if (idMatch) videoId = idMatch[1];
+      const titleMatch = html.match(/"title":\{"runs":\[\{"text":"([^"]+)"/);
+      if (titleMatch) title = titleMatch[1];
+    } catch(e) { console.warn('YouTube-Suche fehlgeschlagen'); }
+
+    // 2. Video-Beschreibung laden
+    if (videoId) {
+      loadingText.textContent = T.videoFound;
+      try {
+        const vidHtml = await proxyFetch('https://www.youtube.com/watch?v=' + videoId);
+        const descMatch = vidHtml.match(/"shortDescription":"([\s\S]{0,1500})"/);
+        if (descMatch) description = descMatch[1].replace(/\\n/g,'\n').replace(/\\"/g,'"');
+        const vidTitle = vidHtml.match(/"title":"([^"]+)"/);
+        if (vidTitle) title = vidTitle[1].replace(/\\u0026/g,'&').replace(/\\n/g,' ');
+      } catch(e) { console.warn('Video-Details fehlgeschlagen'); }
+    }
+
+    // 3. Groq extrahiert Rezept
+    loadingText.textContent = T.aiExtracting;
+    const sys = 'Du bist ein Detox-Ernährungsexperte. Antworte NUR mit validem JSON, ohne Erklärungen.';
+    const user = `Erstelle ein Detox-Saft-Rezept für "${title}"${description ? ' basierend auf:\n' + description.slice(0,800) : ''}.\n\nFormat:\n{"titel":"...","zeitGesamt":"X Min","portionen":"1-2 Portionen","kalorien":"ca. X kcal","protein":"Xg","kohlenhydrate":"Xg","fett":"Xg","ballaststoffe":"Xg","zutaten":["Menge Zutat",...],"schritte":["Schritt",...]}`;
+    const raw = await groqChat(sys, user);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Kein JSON von KI erhalten');
+    const parsed = JSON.parse(jsonMatch[0]);
+    const newRec = { id: Date.now(), youtubeId: videoId || null, ...parsed };
+    recipes.push(newRec);
+    saveRecipes();
+    closeModal('aiRecipeModal');
+    setTab('rezepte');
+    toast(T.recipeFound + newRec.titel, 'success');
+  } catch(e) {
+    console.error(e);
+    toast(T.error + e.message, 'error');
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TAB 4: EINKAUFEN
+// ═══════════════════════════════════════════════════════
+let shopData = { all: [], day1: [], day2: [], day3: [], day4: [] };
+// AI-generierte Liste (wird direkt als shopData.all gesetzt)
+let aiShopItems = [];
+
+async function aiGenerateShopList() {
+  const key = getApiKey();
+  if (!key) { openApiModal(); return; }
+  document.getElementById('aiShopLoading').style.display = '';
+  const btn = document.getElementById('aiShopBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Erstelle...';
+  document.getElementById('shopInfoBox').style.display = 'none';
+  try {
+    const days = setup.days || 4;
+    const sys = 'Du bist ein Detox-Ernährungsexperte. Antworte NUR mit validem JSON, ohne Erklärungen.';
+    const user = `Erstelle eine vollständige Einkaufsliste für einen ${days}-tägigen Saft-Detox (5 Säfte pro Tag).
+Nutze typische Detox-Zutaten: Ingwer, Zitrone, Gurke, Sellerie, Apfel, Karotte, Rübe, Spinat, Grünkohl, Petersilie, Kurkuma, Minze, Ananas, Mango, Basilikum etc.
+Gib für jede Zutat die benötigte Gesamtmenge für alle ${days} Tage an.
+
+Antworte in diesem Format:
+{"liste":[{"zutat":"200g Ingwer","tag":"alle"},{"zutat":"8 Zitronen","tag":"alle"},{"zutat":"4 Gurken","tag":"alle"},...],"hinweis":"..."}`;
+    const raw = await groqChat(sys, user);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Kein JSON');
+    const parsed = JSON.parse(jsonMatch[0]);
+    aiShopItems = (parsed.liste || []).map(i => ({
+      raw: i.zutat,
+      display: i.zutat,
+      key: i.zutat.toLowerCase()
+    }));
+    // Zeige Hinweis wenn vorhanden
+    if (parsed.hinweis) {
+      const box = document.getElementById('shopInfoBox');
+      box.innerHTML = `<strong>${T.aiTip}</strong> ${parsed.hinweis}`;
+      box._aiOverride = true;
+      box.style.display = '';
+    }
+    renderShop();
+    toast(T.aiShopDone, 'success');
+  } catch(e) {
+    console.error(e);
+    toast(T.error + e.message, 'error');
+    document.getElementById('shopInfoBox').style.display = '';
+  } finally {
+    document.getElementById('aiShopLoading').style.display = 'none';
+    btn.disabled = false;
+    btn.innerHTML = T.aiShop;
+  }
+}
+
+function buildShopList() {
+  shopData = { all: [], day1: [], day2: [], day3: [], day4: [] };
+  const totalDays = setup.days || 4;
+  for (let d = 1; d <= totalDays; d++) {
+    const dk = 'day' + d;
+    const dayIngr = [];
+    (plan[dk] || []).forEach(rid => {
+      if (rid === null) return;
+      const rec = recipes.find(r => r.id === rid);
+      if (rec) (rec.zutaten || []).forEach(z => dayIngr.push(z.trim()));
+    });
+    shopData['day' + d] = mergeIngredients(dayIngr);
+    shopData.all.push(...shopData['day' + d]);
+  }
+  shopData.all = mergeIngredients(shopData.all.map(i => i.raw));
+  renderShop();
+}
+
+function mergeIngredients(rawList) {
+  const map = {};
+  rawList.forEach(raw => {
+    const key = raw.toLowerCase().replace(/\d+g?ml?|ca\.?\s*/gi,'').trim().replace(/\s+/g,' ');
+    if (!map[key]) map[key] = { display: raw, raw, count: 1 };
+    else map[key].count++;
+  });
+  return Object.values(map).map(v => ({
+    raw: v.raw,
+    display: v.count > 1 ? `${v.count}× ${v.display}` : v.display,
+    key: v.raw.toLowerCase()
+  }));
+}
+
+function setShopView(view) {
+  shopView = view;
+  document.querySelectorAll('.day-tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  renderShop();
+}
+
+function renderShop() {
+  const area = document.getElementById('shopListArea');
+  // KI-Liste hat Vorrang bei "Alle 4 Tage"-Ansicht
+  let list = (shopView === 'all' && aiShopItems.length > 0) ? aiShopItems : (shopData[shopView] || []);
+  if (list.length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>${T.shopEmpty}</p></div>`;
+    return;
+  }
+  const viewKey = shopView === 'all' && aiShopItems.length > 0 ? 'ai' : shopView;
+  area.innerHTML = list.map(item => {
+    const key = item.key + '_' + viewKey;
+    const checked = shopChecked[key] || false;
+    return `
+      <div class="shop-item ${checked ? 'checked' : ''}">
+        <div class="shop-check ${checked ? 'checked' : ''}" onclick="toggleShopItem('${key.replace(/'/g,"\\'")}')">${checked ? '✓' : ''}</div>
+        <span class="shop-text">${item.display}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleShopItem(key) {
+  shopChecked[key] = !shopChecked[key];
+  saveShop();
+  renderShop();
+}
+
+function uncheckAll() {
+  const viewKey = shopView === 'all' && aiShopItems.length > 0 ? 'ai' : shopView;
+  const list = (shopView === 'all' && aiShopItems.length > 0) ? aiShopItems : (shopData[shopView] || []);
+  list.forEach(item => { delete shopChecked[item.key + '_' + viewKey]; });
+  saveShop();
+  renderShop();
+  toast(T.allReset, 'info');
+}
+
+function copyShopList() {
+  const list = (shopView === 'all' && aiShopItems.length > 0) ? aiShopItems : (shopData[shopView] || []);
+  if (list.length === 0) { toast(T.listEmpty, 'warning'); return; }
+  const text = list.map(i => '• ' + i.display).join('\n');
+  navigator.clipboard.writeText(text).then(() => toast(T.listCopied, 'success')).catch(() => toast(T.copyFailed, 'error'));
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  translateStaticUI();
+  buildShopList();
+  renderToday();
+  
+  // Register Service Worker for PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('❌ Service Worker registration failed:', error);
+      });
+  }
+});
+</script>
+</body>
+</html>
